@@ -30,7 +30,3 @@ jobs:
           yarn package-ci
           yarn lint
           yarn ts
-
-# Failing because virtual framebuffer not installed
-#          yarn build-e2e
-#          yarn test-e2e
