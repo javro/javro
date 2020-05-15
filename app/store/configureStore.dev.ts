@@ -4,8 +4,8 @@ import { createHashHistory } from 'history';
 import { routerActions, routerMiddleware } from 'connected-react-router';
 import { createLogger } from 'redux-logger';
 import createRootReducer from '../reducers';
-import * as counterActions from '../actions/counter';
-import { javroStateType } from '../reducers/types';
+import * as editorActions from '../actions/editor';
+import { JavroStateType } from '../reducers/types';
 
 declare global {
   interface Window {
@@ -26,7 +26,7 @@ const history = createHashHistory();
 
 const rootReducer = createRootReducer(history);
 
-const configureStore = (initialState?: javroStateType) => {
+const configureStore = (initialState?: JavroStateType) => {
   // Redux Configuration
   const middleware = [];
   const enhancers = [];
@@ -51,7 +51,7 @@ const configureStore = (initialState?: javroStateType) => {
 
   // Redux DevTools Configuration
   const actionCreators = {
-    ...counterActions,
+    ...editorActions,
     ...routerActions
   };
   // If Redux DevTools Extension is installed use it, otherwise use Redux compose

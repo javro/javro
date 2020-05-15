@@ -1,11 +1,12 @@
 import { Action, Dispatch as ReduxDispatch, Store as ReduxStore } from 'redux';
+import { EditorState } from './editor';
 
-export type javroStateType = {
-  counter: number;
+export type JavroStateType = {
+  editor: EditorState;
 };
 
-export type GetState = () => javroStateType;
+export type GetState = () => JavroStateType;
 
 export type Dispatch = ReduxDispatch<Action<string>>;
 
-export type Store = ReduxStore<javroStateType, Action<string>>;
+export type Store = ReduxStore<JavroStateType, Action<string>>;

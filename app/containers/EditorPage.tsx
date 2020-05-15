@@ -1,30 +1,21 @@
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import Counter from '../components/Counter';
-import {
-  decrement,
-  increment,
-  incrementAsync,
-  incrementIfOdd
-} from '../actions/counter';
-import { javroStateType } from '../reducers/types';
+import Editor from '../components/Editor';
+import { JavroStateType } from '../reducers/types';
+import { changeAvro, changeJson } from '../actions/editor';
 
-function mapStateToProps(state: javroStateType) {
-  return {
-    counter: state.counter
-  };
+function mapStateToProps(state: JavroStateType) {
+  return { ...state.editor };
 }
 
 function mapDispatchToProps(dispatch: Dispatch) {
   return bindActionCreators(
     {
-      increment,
-      decrement,
-      incrementIfOdd,
-      incrementAsync
+      changeJson,
+      changeAvro
     },
     dispatch
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Counter);
+export default connect(mapStateToProps, mapDispatchToProps)(Editor);

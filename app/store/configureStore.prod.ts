@@ -3,14 +3,14 @@ import thunk from 'redux-thunk';
 import { createHashHistory } from 'history';
 import { routerMiddleware } from 'connected-react-router';
 import createRootReducer from '../reducers';
-import { javroStateType, Store } from '../reducers/types';
+import { JavroStateType, Store } from '../reducers/types';
 
 const history = createHashHistory();
 const rootReducer = createRootReducer(history);
 const router = routerMiddleware(history);
 const enhancer = applyMiddleware(thunk, router);
 
-function configureStore(initialState?: javroStateType): Store {
+function configureStore(initialState?: JavroStateType): Store {
   return createStore(rootReducer, initialState, enhancer);
 }
 
