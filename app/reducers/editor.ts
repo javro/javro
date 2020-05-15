@@ -28,21 +28,36 @@ function json(state = { value: '' }, action: ChangeJsonAction) {
   }
 }
 
-function avro(
-  state = { value: '', isInError: false },
+function isInError(
+  state = false,
   action: ChangeAvroAction | ChangeAvroIsInErrorAction
 ) {
   switch (action.type) {
     case CHANGE_AVRO: {
-      return { ...state, value: action.value };
+      return false;
     }
     case CHANGE_AVRO_IS_IN_ERROR: {
-      return { ...state, isInError: action.value };
+      return true;
     }
     default:
       return state;
   }
 }
+
+function value(state = '', action: ChangeAvroAction) {
+  switch (action.type) {
+    case CHANGE_AVRO: {
+      return action.value;
+    }
+    default:
+      return state;
+  }
+}
+
+const avro = combineReducers({
+  isInError,
+  value
+});
 
 export default combineReducers({
   json,

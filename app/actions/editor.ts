@@ -56,7 +56,6 @@ export function changeAvroWithDispatch(
 
       const jsonFromAvro = avro2json(avroAsObject);
       dispatch(changeJson(JSON.stringify(jsonFromAvro, null, 4)));
-      dispatch(changeAvroIsInError(false));
     } catch (error) {
       dispatch(changeAvroIsInError(true));
     }
