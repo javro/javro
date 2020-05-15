@@ -1,4 +1,10 @@
-import { CHANGE_AVRO, CHANGE_JSON, EditorActions } from '../actions/editor';
+import { combineReducers } from 'redux';
+import {
+  CHANGE_AVRO,
+  CHANGE_JSON,
+  ChangeAvroAction,
+  ChangeJsonAction
+} from '../actions/editor';
 
 export interface EditorState {
   avro: {
@@ -9,24 +15,27 @@ export interface EditorState {
   };
 }
 
-const defaultState: EditorState = {
-  avro: {
-    value: ''
-  },
-  json: {
-    value: ''
-  }
-};
-
-export default function editor(state = defaultState, action: EditorActions) {
+function json(state = { value: '' }, action: ChangeJsonAction) {
   switch (action.type) {
     case CHANGE_JSON: {
-      return { ...state, json: { ...state.json, value: action.value } };
-    }
-    case CHANGE_AVRO: {
-      return { ...state, avro: { ...state.avro, value: action.value } };
+      return { ...state, value: action.value };
     }
     default:
       return state;
   }
 }
+
+function avro(state = { value: '' }, action: ChangeAvroAction) {
+  switch (action.type) {
+    case CHANGE_AVRO: {
+      return { ...state, value: action.value };
+    }
+    default:
+      return state;
+  }
+}
+
+export default combineReducers({
+  json,
+  avro
+});

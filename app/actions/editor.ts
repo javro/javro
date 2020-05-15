@@ -37,5 +37,3 @@ export function changeJsonWithDispatch(
     dispatch(changeAvro(avroFromJson));
   };
 }
-
-export type EditorActions = ChangeJsonAction | ChangeAvroAction;
