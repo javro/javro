@@ -1,0 +1,8 @@
+.layout {
+  height: 100vh;
+}
+
+.layout-content {
+  padding: 24px;
+  min-height: 50vh;
+}
