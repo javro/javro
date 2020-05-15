@@ -19,8 +19,19 @@ type Props = {
 export default function Editor(props: Props) {
   const { json, changeJson, avro, changeAvro } = props;
 
-  const options = {
-    selectOnLineNumbers: true
+  const jsonOptions = {
+    selectOnLineNumbers: true,
+    readOnly: true,
+    minimap: {
+      enabled: false
+    }
+  };
+
+  const avroOptions = {
+    selectOnLineNumbers: true,
+    minimap: {
+      enabled: false
+    }
   };
 
   return (
@@ -39,9 +50,9 @@ export default function Editor(props: Props) {
                 height="500"
                 language="json"
                 theme="vs-light"
-                options={options}
-                value={json.value}
-                onChange={value => changeJson(value)}
+                options={avroOptions}
+                value={avro.value}
+                onChange={value => changeAvro(value)}
               />
             </Col>
             <Col span={12}>
@@ -50,9 +61,9 @@ export default function Editor(props: Props) {
                 height="500"
                 language="json"
                 theme="vs-light"
-                options={options}
-                value={avro.value}
-                onChange={value => changeAvro(value)}
+                options={jsonOptions}
+                value={json.value}
+                onChange={value => changeJson(value)}
               />
             </Col>
           </Row>

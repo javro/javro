@@ -1,4 +1,5 @@
 import { Dispatch } from 'redux';
+import { avro2json } from 'json2avro/dist';
 
 export const CHANGE_JSON = 'CHANGE_JSON';
 export const CHANGE_AVRO = 'CHANGE_AVRO';
@@ -27,13 +28,13 @@ export function changeAvro(value: string): ChangeAvroAction {
   };
 }
 
-export function changeJsonWithDispatch(
+export function changeAvroWithDispatch(
   value: string
 ): (dispatch: Dispatch) => void {
   return (dispatch: Dispatch) => {
-    dispatch(changeJson(value));
+    dispatch(changeAvro(value));
 
-    const avroFromJson = `${value} from Json`;
-    dispatch(changeAvro(avroFromJson));
+    const jsonFromAvro = avro2json(JSON.parse(value));
+    dispatch(changeJson(JSON.stringify(jsonFromAvro, null, 4)));
   };
 }
