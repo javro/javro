@@ -19,19 +19,21 @@ type Props = {
 export default function Editor(props: Props) {
   const { json, changeJson, avro, changeAvro } = props;
 
-  const jsonOptions = {
+  const options = {
     selectOnLineNumbers: true,
-    readOnly: true,
+    automaticLayout: true,
     minimap: {
       enabled: false
     }
   };
 
+  const jsonOptions = {
+    ...options,
+    readOnly: true
+  };
+
   const avroOptions = {
-    selectOnLineNumbers: true,
-    minimap: {
-      enabled: false
-    }
+    ...options
   };
 
   return (
@@ -43,10 +45,11 @@ export default function Editor(props: Props) {
       </Header>
       <Content style={{ padding: '0 50px' }}>
         <div className={styles['layout-content']}>
-          <Row>
+          <h1>Avro to JSON</h1>
+          <Row gutter={16}>
             <Col span={12}>
               <MonacoEditor
-                width="90%"
+                width="100%"
                 height="500"
                 language="json"
                 theme="vs-light"
@@ -57,7 +60,7 @@ export default function Editor(props: Props) {
             </Col>
             <Col span={12}>
               <MonacoEditor
-                width="90%"
+                width="100%"
                 height="500"
                 language="json"
                 theme="vs-light"
