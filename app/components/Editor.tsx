@@ -1,5 +1,6 @@
 import React from 'react';
 import { Col, Layout, Menu, Row } from 'antd';
+import MonacoEditor from 'react-monaco-editor';
 import styles from './Editor.css';
 
 const { Header, Content } = Layout;
@@ -16,7 +17,11 @@ type Props = {
 };
 
 export default function Editor(props: Props) {
-  const { json, changeJson } = props;
+  const { json, changeJson, avro, changeAvro } = props;
+
+  const options = {
+    selectOnLineNumbers: true
+  };
 
   return (
     <Layout className={styles.layout}>
@@ -29,15 +34,26 @@ export default function Editor(props: Props) {
         <div className={styles['layout-content']}>
           <Row>
             <Col span={12}>
-              <h1>JSON</h1>
-              <input
-                type="text"
+              <MonacoEditor
+                width="90%"
+                height="500"
+                language="json"
+                theme="vs-light"
+                options={options}
                 value={json.value}
-                onChange={({ target }) => changeJson(target.value)}
+                onChange={value => changeJson(value)}
               />
             </Col>
             <Col span={12}>
-              <p>Bonjour</p>
+              <MonacoEditor
+                width="90%"
+                height="500"
+                language="json"
+                theme="vs-light"
+                options={options}
+                value={avro.value}
+                onChange={value => changeAvro(value)}
+              />
             </Col>
           </Row>
         </div>

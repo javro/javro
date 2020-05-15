@@ -2,7 +2,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import Editor from '../components/Editor';
 import { JavroStateType } from '../reducers/types';
-import { changeAvro, changeJson } from '../actions/editor';
+import { changeAvro, changeJsonWithDispatch } from '../actions/editor';
 
 function mapStateToProps(state: JavroStateType) {
   return { ...state.editor };
@@ -11,7 +11,7 @@ function mapStateToProps(state: JavroStateType) {
 function mapDispatchToProps(dispatch: Dispatch) {
   return bindActionCreators(
     {
-      changeJson,
+      changeJson: changeJsonWithDispatch,
       changeAvro
     },
     dispatch

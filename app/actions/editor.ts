@@ -1,3 +1,5 @@
+import { Dispatch } from 'redux';
+
 export const CHANGE_JSON = 'CHANGE_JSON';
 export const CHANGE_AVRO = 'CHANGE_AVRO';
 
@@ -22,6 +24,17 @@ export function changeAvro(value: string): ChangeAvroAction {
   return {
     type: CHANGE_AVRO,
     value
+  };
+}
+
+export function changeJsonWithDispatch(
+  value: string
+): (dispatch: Dispatch) => void {
+  return (dispatch: Dispatch) => {
+    dispatch(changeJson(value));
+
+    const avroFromJson = `${value} from Json`;
+    dispatch(changeAvro(avroFromJson));
   };
 }
 

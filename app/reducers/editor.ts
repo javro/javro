@@ -11,10 +11,10 @@ export interface EditorState {
 
 const defaultState: EditorState = {
   avro: {
-    value: 'avro'
+    value: ''
   },
   json: {
-    value: 'json'
+    value: ''
   }
 };
 
