@@ -4,6 +4,23 @@
   "version": "1.1.0",
   "description": "Electron application to convert Avro to JSON and reverse",
   "main": "./main.prod.js",
+  "author": {
+    "name": "Baptiste Lecocq",
+    "email": "baptiste.lecocq@gmail.com",
+    "url": "https://github.com/tiste"
+  },
+  "contributors": [
+    {
+      "name": "Baptiste Lecocq",
+      "email": "baptiste.lecocq@gmail.com",
+      "url": "https://github.com/tiste"
+    },
+    {
+      "name": "Delphin Aubin",
+      "email": "delphin.aubin@gmail.com",
+      "url": "https://github.com/delphinaubin"
+    }
+  ],
   "scripts": {
     "electron-rebuild": "node -r ../internals/scripts/BabelRegister.js ../internals/scripts/ElectronRebuild.js",
     "postinstall": "yarn electron-rebuild"

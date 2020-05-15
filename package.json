@@ -105,6 +105,23 @@
     "type": "git",
     "url": "git+https://github.com/javro/javro.git"
   },
+  "author": {
+    "name": "Baptiste Lecocq",
+    "email": "baptiste.lecocq@gmail.com",
+    "url": "https://github.com/tiste"
+  },
+  "contributors": [
+    {
+      "name": "Baptiste Lecocq",
+      "email": "baptiste.lecocq@gmail.com",
+      "url": "https://github.com/tiste"
+    },
+    {
+      "name": "Delphin Aubin",
+      "email": "delphin.aubin@gmail.com",
+      "url": "https://github.com/delphinaubin"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/javro/javro/issues"
