@@ -2,14 +2,14 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import Counter from '../components/Counter';
 import {
-  increment,
   decrement,
-  incrementIfOdd,
-  incrementAsync
+  increment,
+  incrementAsync,
+  incrementIfOdd
 } from '../actions/counter';
-import { counterStateType } from '../reducers/types';
+import { javroStateType } from '../reducers/types';
 
-function mapStateToProps(state: counterStateType) {
+function mapStateToProps(state: javroStateType) {
   return {
     counter: state.counter
   };
