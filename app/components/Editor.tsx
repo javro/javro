@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Layout, Menu, Row } from 'antd';
+import { Alert, Col, Layout, Menu, Row } from 'antd';
 import MonacoEditor from 'react-monaco-editor';
 import styles from './Editor.css';
 
@@ -7,6 +7,7 @@ const { Header, Content } = Layout;
 
 type Props = {
   avro: {
+    isInError: boolean;
     value: string;
   };
   json: {
@@ -48,15 +49,17 @@ export default function Editor(props: Props) {
           <h1>Avro to JSON</h1>
           <Row gutter={16}>
             <Col span={12}>
-              <MonacoEditor
-                width="100%"
-                height="500"
-                language="json"
-                theme="vs-light"
-                options={avroOptions}
-                value={avro.value}
-                onChange={value => changeAvro(value)}
-              />
+              <div className={avro.isInError ? styles.malformed : ''}>
+                <MonacoEditor
+                  width="100%"
+                  height="500"
+                  language="json"
+                  theme="vs-light"
+                  options={avroOptions}
+                  value={avro.value}
+                  onChange={value => changeAvro(value)}
+                />
+              </div>
             </Col>
             <Col span={12}>
               <MonacoEditor
@@ -70,6 +73,10 @@ export default function Editor(props: Props) {
               />
             </Col>
           </Row>
+          <br />
+          {avro.isInError && (
+            <Alert message="Avro is malformed" type="warning" />
+          )}
         </div>
       </Content>
     </Layout>
