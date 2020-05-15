@@ -43,6 +43,8 @@ dll
 main.js
 main.js.map
 
+*.worker.js*
+
 .idea
 .vscode
 npm-debug.log.*

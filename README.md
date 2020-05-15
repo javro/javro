@@ -14,6 +14,12 @@ To package apps for the local platform:
 yarn package
 ```
 
+## Debug
+
+```bash
+DEBUG_PROD=true yarn build && DEBUG_PROD=true yarn start
+```
+
 ## Docs
 
 See our [docs and guides here](https://electron-react-boilerplate.js.org/docs/installation)

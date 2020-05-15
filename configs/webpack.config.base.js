@@ -4,6 +4,7 @@
 
 import path from 'path';
 import webpack from 'webpack';
+import MonacoWebpackPlugin from 'monaco-editor-webpack-plugin';
 import { dependencies as externals } from '../app/package.json';
 
 export default {
@@ -39,6 +40,10 @@ export default {
   },
 
   plugins: [
+    new MonacoWebpackPlugin({
+      languages: ['json']
+    }),
+
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'production'
     }),
