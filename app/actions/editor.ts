@@ -18,7 +18,6 @@ export interface ChangeAvroAction {
 
 export interface ChangeAvroIsInErrorAction {
   type: typeof CHANGE_AVRO_IS_IN_ERROR;
-  value: boolean;
 }
 
 export function changeJson(value: string): ChangeJsonAction {
@@ -35,12 +34,9 @@ export function changeAvro(value: string): ChangeAvroAction {
   };
 }
 
-export function changeAvroIsInError(
-  isInError: boolean
-): ChangeAvroIsInErrorAction {
+export function changeAvroIsInError(): ChangeAvroIsInErrorAction {
   return {
-    type: CHANGE_AVRO_IS_IN_ERROR,
-    value: isInError
+    type: CHANGE_AVRO_IS_IN_ERROR
   };
 }
 
@@ -57,7 +53,7 @@ export function changeAvroWithDispatch(
       const jsonFromAvro = avro2json(avroAsObject);
       dispatch(changeJson(JSON.stringify(jsonFromAvro, null, 4)));
     } catch (error) {
-      dispatch(changeAvroIsInError(true));
+      dispatch(changeAvroIsInError());
     }
   };
 }
