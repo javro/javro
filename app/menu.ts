@@ -1,10 +1,10 @@
 /* eslint @typescript-eslint/ban-ts-ignore: off */
 import {
   app,
-  Menu,
-  shell,
   BrowserWindow,
-  MenuItemConstructorOptions
+  Menu,
+  MenuItemConstructorOptions,
+  shell
 } from 'electron';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
@@ -55,17 +55,17 @@ export default class MenuBuilder {
 
   buildDarwinTemplate() {
     const subMenuAbout: DarwinMenuItemConstructorOptions = {
-      label: 'Electron',
+      label: 'Javro',
       submenu: [
         {
-          label: 'About ElectronReact',
+          label: 'About Javro',
           selector: 'orderFrontStandardAboutPanel:'
         },
         { type: 'separator' },
         { label: 'Services', submenu: [] },
         { type: 'separator' },
         {
-          label: 'Hide ElectronReact',
+          label: 'Hide Javro',
           accelerator: 'Command+H',
           selector: 'hide:'
         },
