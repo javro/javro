@@ -52,8 +52,8 @@
     ]
   },
   "build": {
-    "productName": "ElectronReact",
-    "appId": "org.develar.ElectronReact",
+    "productName": "Javro",
+    "appId": "com.javro.Javro",
     "files": [
       "dist/",
       "node_modules/",
