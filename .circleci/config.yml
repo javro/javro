@@ -1,0 +1,35 @@
+version: 2.1
+orbs:
+  node: circleci/node@1.1.6
+jobs:
+  build-and-test:
+    executor:
+      name: node/default
+    steps:
+      - checkout
+      - node/with-cache:
+          steps:
+            - run: yarn install
+            - run: yarn lint
+            - run: yarn build
+            - run: yarn test
+  package:
+    executor:
+      name: node/default
+    steps:
+      - checkout
+      - node/with-cache:
+          steps:
+            - run: sudo apt-get install rpm
+            - run: yarn package-ci
+
+workflows:
+  main:
+    jobs:
+      - build-and-test
+      - package:
+          requires:
+            - build-and-test
+          filters:
+            branches:
+              only: master

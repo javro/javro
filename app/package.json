@@ -1,7 +1,7 @@
 {
   "name": "javro",
   "productName": "javro",
-  "version": "1.1.0",
+  "version": "0.0.1",
   "description": "Electron application to convert Avro to JSON and reverse",
   "main": "./main.prod.js",
   "author": {
