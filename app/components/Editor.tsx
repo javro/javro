@@ -1,7 +1,9 @@
 import React from 'react';
 import { Alert, Col, Layout, Menu, Row } from 'antd';
 import MonacoEditor from 'react-monaco-editor';
+import * as monacoEditor from 'monaco-editor/esm/vs/editor/editor.api';
 import styles from './Editor.css';
+import schema from './avro-schema.json';
 
 const { Header, Content } = Layout;
 
@@ -37,6 +39,19 @@ export default function Editor(props: Props) {
     ...options
   };
 
+  function editorWillMount(monacoInstance: typeof monacoEditor) {
+    monacoInstance.languages.json.jsonDefaults.setDiagnosticsOptions({
+      validate: true,
+      schemas: [
+        {
+          fileMatch: ['*'],
+          uri: '',
+          schema
+        }
+      ]
+    });
+  }
+
   return (
     <Layout className={styles.layout}>
       <Header>
@@ -57,6 +72,7 @@ export default function Editor(props: Props) {
                   theme="vs-light"
                   options={avroOptions}
                   value={avro.value}
+                  editorWillMount={editorWillMount}
                   onChange={value => changeAvro(value)}
                 />
               </div>
