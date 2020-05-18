@@ -2975,10 +2975,9 @@ autoprefixer@^9.7.3:
     postcss "^7.0.26"
     postcss-value-parser "^4.0.2"
 
-avsc@5.4.21:
+avsc@delphinaubin/avsc#feature/generate-not-random-sample-value-of-type:
   version "5.4.21"
-  resolved "https://registry.yarnpkg.com/avsc/-/avsc-5.4.21.tgz#eafaf5cbfd72bbc3d1bd82fc6bdeb7dda3ba8b2c"
-  integrity sha512-Vr733yyksCfwwXVZ6WjgttDF1TLlUeYWBJDHpO61qeOo6GnaIaVRiJ64ZgpwXfFtbPv1fCuLFV0qz++QUFCZPw==
+  resolved "https://codeload.github.com/delphinaubin/avsc/tar.gz/4e5170a44184d33510d8d717ae624d23cdd1b045"
 
 aws-sign2@~0.7.0:
   version "0.7.0"

@@ -1,5 +1,4 @@
 import { Dispatch } from 'redux';
-import { avro2json } from 'json2avro/dist';
 import avro from 'avsc';
 
 export const CHANGE_JSON = 'CHANGE_JSON';
@@ -47,11 +46,8 @@ export function changeAvroWithDispatch(
     dispatch(changeAvro(value));
 
     try {
-      const avroAsObject = JSON.parse(value);
-      avro.Type.forSchema(avroAsObject);
-
-      const jsonFromAvro = avro2json(avroAsObject);
-      dispatch(changeJson(JSON.stringify(jsonFromAvro, null, 4)));
+      const avroType = avro.Type.forSchema(JSON.parse(value));
+      dispatch(changeJson(JSON.stringify(avroType.sample(), null, 4)));
     } catch (error) {
       dispatch(changeAvroIsInError());
     }
