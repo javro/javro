@@ -5,7 +5,7 @@
   "description": "Electron application to convert Avro to JSON and reverse",
   "main": "./main.prod.js",
   "author": {
-    "name": "Baptiste Lecocq",
+    "name": "Baptiste Lecocq & Delphin Aubin",
     "email": "baptiste.lecocq@gmail.com",
     "url": "https://github.com/tiste"
   },
