@@ -23,7 +23,7 @@
     "allowJs": true
   },
   "exclude": [
-    "test",
+    "*.spec.ts",
     "release",
     "app/main.prod.js",
     "app/main.prod.js.map",
