@@ -1,10 +1,10 @@
 import { AnyAction } from 'redux';
-import editor from '../../app/reducers/editor';
+import editor from './editor';
 import {
   CHANGE_AVRO,
   CHANGE_AVRO_IS_IN_ERROR,
   CHANGE_JSON
-} from '../../app/actions/editor';
+} from '../actions/editor';
 
 const defaultState = {
   avro: {
