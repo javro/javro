@@ -23,10 +23,10 @@ export default function getJsonPathFromPosition(
       return isStartBefore && isEndAfter;
     })
     .map(([key]) => key)
-    .reduce((longuestKey, currentKey) => {
-      if (currentKey.length > longuestKey.length) {
+    .reduce((longestKey, currentKey) => {
+      if (currentKey.length > longestKey.length) {
         return currentKey;
       }
-      return longuestKey;
+      return longestKey;
     }, '');
 }

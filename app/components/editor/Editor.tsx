@@ -1,10 +1,12 @@
 import React from 'react';
-import { Alert, Col, Layout, Menu, Row } from 'antd';
+import { Alert, Col, Layout, Row } from 'antd';
 import { SourceMap } from 'json-source-map';
-import styles from './Editor.css';
-import CodeEditor, { EditorPosition } from './code-editor/CodeEditor';
-import getJsonPathFromPosition from '../services/source-map/get-json-path-from-position';
-import avroPathToJsonPath from '../services/source-map/avro-path-to-json-path';
+import classNames from './Editor.css';
+import CodeEditor, { EditorPosition } from '../code-editor/CodeEditor';
+import getJsonPathFromPosition from '../../services/source-map/get-json-path-from-position';
+import avroPathToJsonPath from '../../services/source-map/avro-path-to-json-path';
+import logo from './javro-white.png';
+import { COLORS } from '../constants/theme';
 
 const { Header, Content } = Layout;
 
@@ -35,6 +37,10 @@ function getJsonPath(avro: Props['avro'], json: Props['json']): string {
   return '';
 }
 
+function sourceMapPositionValueToMonacoPositionValue(positionValue: number) {
+  return positionValue + 1;
+}
+
 function getPositionFromPath(
   path: string,
   sourceMap: SourceMap
@@ -49,14 +55,18 @@ function getPositionFromPath(
 
   return {
     start: {
-      line: start.line + 1,
-      column: start.column + 1
+      line: sourceMapPositionValueToMonacoPositionValue(start.line),
+      column: sourceMapPositionValueToMonacoPositionValue(start.column)
     },
     end: {
-      line: end.line + 1,
-      column: end.column + 1
+      line: sourceMapPositionValueToMonacoPositionValue(end.line),
+      column: sourceMapPositionValueToMonacoPositionValue(end.column)
     }
   };
+}
+
+function getAvroEditorCssClasses(isInError: boolean) {
+  return (isInError ? `${classNames.malformed} ` : '') + classNames.codeEditor;
 }
 
 export default function Editor(props: Props) {
@@ -68,20 +78,21 @@ export default function Editor(props: Props) {
     undefined;
 
   return (
-    <Layout className={styles.layout}>
-      <Header>
-        <Menu theme="dark" mode="horizontal">
-          <Menu.Item key="1">Javro</Menu.Item>
-        </Menu>
+    <Layout className={classNames.layout}>
+      <Header
+        style={{ backgroundColor: COLORS.DARK_BLUE, textAlign: 'center' }}
+      >
+        <img src={logo} style={{ height: '3.5rem' }} alt="Javro Logo" />
       </Header>
       <Content style={{ padding: '0 50px' }}>
-        <div className={styles['layout-content']}>
+        <div className={classNames.layoutContent}>
           <Row gutter={16}>
             <Col span={12}>
-              <div className={avro.isInError ? styles.malformed : ''}>
+              <h3 style={{ color: COLORS.DARK_BLUE }}>Avro</h3>
+              <div className={getAvroEditorCssClasses(avro.isInError)}>
                 <CodeEditor
                   value={avro.value.str}
-                  onChange={value => changeAvro(value)}
+                  onValueChange={value => changeAvro(value)}
                   onMouseMove={position => {
                     avroMouseMove(position);
                   }}
@@ -89,17 +100,26 @@ export default function Editor(props: Props) {
               </div>
             </Col>
             <Col span={12}>
-              <CodeEditor
-                selection={jsonSelection}
-                value={json.value.str}
-                onChange={value => changeJson(value)}
-                monacoOptions={{ readOnly: true }}
-              />
+              <h3 style={{ color: COLORS.DARK_BLUE }}>JSON</h3>
+              <div className={classNames.codeEditor}>
+                <CodeEditor
+                  selection={jsonSelection}
+                  value={json.value.str}
+                  onValueChange={value => changeJson(value)}
+                  monacoOptions={{ readOnly: true }}
+                />
+              </div>
             </Col>
           </Row>
-          <br />
           {avro.isInError && (
-            <Alert message="Avro is malformed" type="warning" />
+            <Alert
+              message="Avro is malformed"
+              style={{
+                marginTop: '1rem',
+                borderColor: COLORS.ORANGE,
+                backgroundColor: COLORS.LIGHT_ORANGE
+              }}
+            />
           )}
         </div>
       </Content>

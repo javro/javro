@@ -6,12 +6,12 @@ import MonacoEditor, {
 import * as monacoEditor from 'monaco-editor';
 import schema from '../avro-schema.json';
 
-function triggerOnValueChange<T>(callBack: (value: T) => void, value: T): void {
+function triggerOnValueChange<T>(callback: (value: T) => void, value: T): void {
   const [lastValueInJson, setLastValueInJson] = useState('');
   const currentValueInJson = JSON.stringify(value);
   if (currentValueInJson !== lastValueInJson) {
     setLastValueInJson(currentValueInJson);
-    callBack(value);
+    callback(value);
   }
 }
 
@@ -25,7 +25,7 @@ type Props = {
   value: string;
   selection?: EditorPositonRange;
   onMouseMove?: (position: EditorPosition) => void;
-  onChange?: (value: string) => void;
+  onValueChange?: (value: string) => void;
   monacoOptions?: monacoEditor.editor.IEditorConstructionOptions;
 };
 
@@ -33,7 +33,7 @@ export default function CodeEditor(props: Props) {
   const {
     value,
     onMouseMove,
-    onChange,
+    onValueChange,
     monacoOptions,
     selection
   } = props as Required<Omit<Props, 'selection'>> & Props;
@@ -88,14 +88,14 @@ export default function CodeEditor(props: Props) {
   return (
     <MonacoEditor
       width="100%"
-      height="80vh"
+      height="100%"
       language="json"
       theme="vs-light"
       options={computedMonacoOptions}
       value={value}
       editorWillMount={editorWillMount}
       editorDidMount={editorDidMount}
-      onChange={v => onChange(v)}
+      onChange={v => onValueChange(v)}
     />
   );
 }
@@ -103,6 +103,6 @@ export default function CodeEditor(props: Props) {
 CodeEditor.defaultProps = {
   value: '',
   onMouseMove: () => {},
-  onChange: () => {},
+  onValueChange: () => {},
   monacoOptions: {}
 } as Required<Omit<Props, 'selection'>>;
