@@ -6,7 +6,7 @@ import CodeEditor, { EditorPosition } from '../code-editor/CodeEditor';
 import getJsonPathFromPosition from '../../services/source-map/get-json-path-from-position';
 import avroPathToJsonPath from '../../services/source-map/avro-path-to-json-path';
 import logo from './javro-white.png';
-import { COLORS } from '../constants/theme';
+import { COLORS } from '../../constants/theme';
 
 const { Header, Content } = Layout;
 
