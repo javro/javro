@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import MonacoEditor, {
   EditorDidMount,
   EditorWillMount
@@ -21,24 +21,37 @@ export type EditorPositonRange = {
   end: EditorPosition;
 };
 
+export type EditorError = {
+  message: string;
+  line: number;
+};
+
 type Props = {
   value: string;
   selection?: EditorPositonRange;
   onMouseMove?: (position: EditorPosition) => void;
   onValueChange?: (value: string) => void;
+  onError?: (messages: EditorError[]) => void;
   monacoOptions?: monacoEditor.editor.IEditorConstructionOptions;
 };
+
+interface Marker {
+  message: string;
+  line: number;
+}
 
 export default function CodeEditor(props: Props) {
   const {
     value,
     onMouseMove,
     onValueChange,
+    onError,
     monacoOptions,
     selection
   } = props as Required<Omit<Props, 'selection'>> & Props;
 
   const [editor, setEditor] = useState();
+  const [lastMarkers, setLastMarkers] = useState([] as Marker[]);
 
   triggerOnValueChange(changedSelection => {
     if (editor && changedSelection) {
@@ -76,6 +89,29 @@ export default function CodeEditor(props: Props) {
     setEditor(mountedEditor);
   };
 
+  useLayoutEffect(() => {
+    if (editor) {
+      const model = editor.getModel();
+      const owner = model.getModeId();
+      const markers = monacoEditor.editor.getModelMarkers({ owner }).map(
+        marker =>
+          ({
+            message: marker.message,
+            line: marker.startLineNumber
+          } as Marker)
+      );
+
+      if (JSON.stringify(lastMarkers) !== JSON.stringify(markers)) {
+        setLastMarkers(markers);
+        onError(markers);
+      }
+    }
+  });
+
+  const valueOnChange = (v: string) => {
+    onValueChange(v);
+  };
+
   const computedMonacoOptions = {
     selectOnLineNumbers: true,
     automaticLayout: true,
@@ -95,7 +131,7 @@ export default function CodeEditor(props: Props) {
       value={value}
       editorWillMount={editorWillMount}
       editorDidMount={editorDidMount}
-      onChange={v => onValueChange(v)}
+      onChange={v => valueOnChange(v)}
     />
   );
 }
@@ -104,5 +140,6 @@ CodeEditor.defaultProps = {
   value: '',
   onMouseMove: () => {},
   onValueChange: () => {},
+  onError: () => {},
   monacoOptions: {}
 } as Required<Omit<Props, 'selection'>>;
