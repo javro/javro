@@ -1,4 +1,4 @@
-!(Javro)[https://javro.github.io/assets/images/demo.gif]
+![Javro](https://javro.github.io/assets/images/demo.gif)
 
 ## Starting Development
 
