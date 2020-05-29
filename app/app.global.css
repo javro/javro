@@ -5,3 +5,8 @@
 @import '~@fortawesome/fontawesome-free/css/all.css';
 @import '~antd/dist/antd.css';
 @import '~monaco-editor/min/vs/editor/editor.main.css';
+
+#root {
+  height: 100%;
+  background-color: #f0f2f5;
+}

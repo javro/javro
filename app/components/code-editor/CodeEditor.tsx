@@ -5,6 +5,7 @@ import MonacoEditor, {
 } from 'react-monaco-editor';
 import * as monacoEditor from 'monaco-editor';
 import schema from '../avro-schema.json';
+import { COLORS } from '../../constants/theme';
 
 function triggerOnValueChange<T>(callback: (value: T) => void, value: T): void {
   const [lastValueInJson, setLastValueInJson] = useState('');
@@ -15,10 +16,25 @@ function triggerOnValueChange<T>(callback: (value: T) => void, value: T): void {
   }
 }
 
+monacoEditor.editor.defineTheme('javro', {
+  base: 'vs',
+  inherit: true,
+  rules: [],
+  colors: {
+    'editor.selectionBackground': COLORS.EXTRA_LIGHT_BLUE,
+    'editor.inactiveSelectionBackground': COLORS.LIGHT_BLUE
+  }
+});
+
 export type EditorPosition = { line: number; column: number };
 export type EditorPositonRange = {
   start: EditorPosition;
   end: EditorPosition;
+};
+
+export type EditorError = {
+  message: string;
+  line: number;
 };
 
 type Props = {
@@ -26,14 +42,21 @@ type Props = {
   selection?: EditorPositonRange;
   onMouseMove?: (position: EditorPosition) => void;
   onValueChange?: (value: string) => void;
+  onError?: (messages: EditorError[]) => void;
   monacoOptions?: monacoEditor.editor.IEditorConstructionOptions;
 };
+
+interface Marker {
+  message: string;
+  line: number;
+}
 
 export default function CodeEditor(props: Props) {
   const {
     value,
     onMouseMove,
     onValueChange,
+    onError,
     monacoOptions,
     selection
   } = props as Required<Omit<Props, 'selection'>> & Props;
@@ -76,6 +99,26 @@ export default function CodeEditor(props: Props) {
     setEditor(mountedEditor);
   };
 
+  const valueOnChange = (v: string) => {
+    onValueChange(v);
+
+    if (editor) {
+      const { setModelMarkers } = monacoEditor.editor;
+      monacoEditor.editor.setModelMarkers = function(model, owner, rawMarkers) {
+        setModelMarkers.call(monacoEditor.editor, model, owner, rawMarkers);
+        const markers = rawMarkers.map(
+          marker =>
+            ({
+              message: marker.message,
+              line: marker.startLineNumber
+            } as Marker)
+        );
+        onError(markers);
+        editor.focus();
+      };
+    }
+  };
+
   const computedMonacoOptions = {
     selectOnLineNumbers: true,
     automaticLayout: true,
@@ -90,12 +133,12 @@ export default function CodeEditor(props: Props) {
       width="100%"
       height="100%"
       language="json"
-      theme="vs-light"
+      theme="javro"
       options={computedMonacoOptions}
       value={value}
       editorWillMount={editorWillMount}
       editorDidMount={editorDidMount}
-      onChange={v => onValueChange(v)}
+      onChange={v => valueOnChange(v)}
     />
   );
 }
@@ -104,5 +147,6 @@ CodeEditor.defaultProps = {
   value: '',
   onMouseMove: () => {},
   onValueChange: () => {},
+  onError: () => {},
   monacoOptions: {}
 } as Required<Omit<Props, 'selection'>>;
