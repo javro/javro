@@ -1,0 +1,18 @@
+.layout {
+  height: 100vh;
+}
+
+.layoutContent {
+  padding: 24px;
+  min-height: 50vh;
+}
+
+.malformed {
+  -webkit-box-shadow: 0 0 10px rgba(255, 99, 77, 0.5);
+  -moz-box-shadow: 0 0 10px rgba(255, 99, 77, 0.5);
+  box-shadow: 0 0 10px rgba(255, 99, 77, 0.5);
+}
+
+.codeEditor {
+  height: calc(90vh - 7rem);
+}

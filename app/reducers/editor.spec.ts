@@ -1,6 +1,7 @@
 import { AnyAction } from 'redux';
 import editor from './editor';
 import {
+  AVRO_MOUSE_MOVE,
   CHANGE_AVRO,
   CHANGE_AVRO_IS_IN_ERROR,
   CHANGE_JSON
@@ -8,11 +9,12 @@ import {
 
 const defaultState = {
   avro: {
-    value: '',
-    isInError: false
+    value: { str: '', parsed: null, sourceMap: null },
+    isInError: false,
+    position: null
   },
   json: {
-    value: ''
+    value: { str: '', parsed: null, sourceMap: null }
   }
 };
 
@@ -25,29 +27,51 @@ it('updates avro', () => {
     {
       ...defaultState,
       avro: {
-        value: '',
+        ...defaultState.avro,
+        value: { str: '', parsed: null, sourceMap: null },
         isInError: true
       }
     },
     {
       type: CHANGE_AVRO,
-      value: 'aValue'
+      value: { str: 'aValue', parsed: {}, sourceMap: {} }
     }
   );
   expect(resultState.avro).toEqual({
-    value: 'aValue',
+    ...defaultState.avro,
+    value: { str: 'aValue', parsed: {}, sourceMap: {} },
     isInError: false
+  });
+});
+
+it('updates avro mouse position', () => {
+  const resultState = editor(
+    {
+      ...defaultState,
+      avro: {
+        ...defaultState.avro,
+        position: null
+      }
+    },
+    {
+      type: AVRO_MOUSE_MOVE,
+      position: { line: 4, column: 2 }
+    }
+  );
+  expect(resultState.avro).toEqual({
+    ...defaultState.avro,
+    position: { line: 4, column: 2 }
   });
 });
 
 it('updates json', () => {
   const resultState = editor(undefined, {
     type: CHANGE_JSON,
-    value: 'aValue'
+    value: { str: 'aValue', parsed: null, sourceMap: null }
   });
 
   expect(resultState.json).toEqual({
-    value: 'aValue'
+    value: { str: 'aValue', parsed: null, sourceMap: null }
   });
 });
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import routes from './constants/routes.json';
+import routes from './routes.json';
 import App from './containers/App';
 import EditorPage from './containers/EditorPage';
 
