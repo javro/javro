@@ -1,7 +1,7 @@
 {
   "name": "javro",
   "productName": "javro",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Electron application to convert Avro to JSON and reverse",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
