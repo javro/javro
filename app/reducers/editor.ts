@@ -1,5 +1,8 @@
 import { combineReducers } from 'redux';
+import { SourceMap } from 'json-source-map';
 import {
+  AVRO_MOUSE_MOVE,
+  AvroMouseMoveAction,
   CHANGE_AVRO,
   CHANGE_AVRO_IS_IN_ERROR,
   CHANGE_JSON,
@@ -8,17 +11,29 @@ import {
   ChangeJsonAction
 } from '../actions/editor';
 
+interface EditorValue {
+  str: string;
+  parsed: object | null;
+  sourceMap: SourceMap | null;
+}
+
 export interface EditorState {
   avro: {
-    value: string;
+    value: EditorValue;
     isInError: boolean;
+    position: { line: number; column: number } | null;
   };
   json: {
-    value: string;
+    value: EditorValue;
   };
 }
 
-function json(state = { value: '' }, action: ChangeJsonAction) {
+function json(
+  state: { value: EditorValue } = {
+    value: { str: '', parsed: null, sourceMap: null }
+  },
+  action: ChangeJsonAction
+) {
   switch (action.type) {
     case CHANGE_JSON: {
       return { ...state, value: action.value };
@@ -44,7 +59,10 @@ function isInError(
   }
 }
 
-function value(state = '', action: ChangeAvroAction) {
+function value(
+  state: EditorValue = { str: '', parsed: null, sourceMap: null },
+  action: ChangeAvroAction
+) {
   switch (action.type) {
     case CHANGE_AVRO: {
       return action.value;
@@ -54,9 +72,23 @@ function value(state = '', action: ChangeAvroAction) {
   }
 }
 
+function position(
+  state: { line: number; column: number } | null = null,
+  action: AvroMouseMoveAction
+) {
+  switch (action.type) {
+    case AVRO_MOUSE_MOVE: {
+      return action.position;
+    }
+    default:
+      return state;
+  }
+}
+
 const avro = combineReducers({
   isInError,
-  value
+  value,
+  position
 });
 
 export default combineReducers({

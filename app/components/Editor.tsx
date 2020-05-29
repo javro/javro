@@ -1,56 +1,71 @@
 import React from 'react';
 import { Alert, Col, Layout, Menu, Row } from 'antd';
-import MonacoEditor from 'react-monaco-editor';
-import * as monacoEditor from 'monaco-editor/esm/vs/editor/editor.api';
+import { SourceMap } from 'json-source-map';
 import styles from './Editor.css';
-import schema from './avro-schema.json';
+import CodeEditor, { EditorPosition } from './code-editor/CodeEditor';
+import getJsonPathFromPosition from '../services/source-map/get-json-path-from-position';
+import avroPathToJsonPath from '../services/source-map/avro-path-to-json-path';
 
 const { Header, Content } = Layout;
 
 type Props = {
   avro: {
     isInError: boolean;
-    value: string;
+    value: { str: string; parsed: object | null; sourceMap: SourceMap | null };
+    position: { line: number; column: number } | null;
   };
   json: {
-    value: string;
+    value: { str: string; parsed: object | null; sourceMap: SourceMap | null };
   };
   changeJson: (value: string) => void;
   changeAvro: (value: string) => void;
+  avroMouseMove: (position: { line: number; column: number }) => void;
 };
 
-export default function Editor(props: Props) {
-  const { json, changeJson, avro, changeAvro } = props;
+function getJsonPath(avro: Props['avro'], json: Props['json']): string {
+  if (avro.value.sourceMap && avro.position) {
+    const avroPath = getJsonPathFromPosition(
+      avro.position,
+      avro.value.sourceMap
+    );
+    if (avroPath) {
+      return avroPathToJsonPath(avroPath, avro.value.parsed, json.value.parsed);
+    }
+  }
+  return '';
+}
 
-  const options = {
-    selectOnLineNumbers: true,
-    automaticLayout: true,
-    minimap: {
-      enabled: false
+function getPositionFromPath(
+  path: string,
+  sourceMap: SourceMap
+): { start: EditorPosition; end: EditorPosition } | null {
+  const sourceMapItem = sourceMap[path];
+  if (!sourceMapItem) {
+    return null;
+  }
+  const start =
+    sourceMapItem.key !== undefined ? sourceMapItem.key : sourceMapItem.value;
+  const end = sourceMapItem.valueEnd;
+
+  return {
+    start: {
+      line: start.line + 1,
+      column: start.column + 1
+    },
+    end: {
+      line: end.line + 1,
+      column: end.column + 1
     }
   };
+}
 
-  const jsonOptions = {
-    ...options,
-    readOnly: true
-  };
+export default function Editor(props: Props) {
+  const { json, changeJson, avro, changeAvro, avroMouseMove } = props;
 
-  const avroOptions = {
-    ...options
-  };
-
-  function editorWillMount(monacoInstance: typeof monacoEditor) {
-    monacoInstance.languages.json.jsonDefaults.setDiagnosticsOptions({
-      validate: true,
-      schemas: [
-        {
-          fileMatch: ['*'],
-          uri: '',
-          schema
-        }
-      ]
-    });
-  }
+  const jsonSelection =
+    (json.value.sourceMap &&
+      getPositionFromPath(getJsonPath(avro, json), json.value.sourceMap)) ||
+    undefined;
 
   return (
     <Layout className={styles.layout}>
@@ -61,31 +76,24 @@ export default function Editor(props: Props) {
       </Header>
       <Content style={{ padding: '0 50px' }}>
         <div className={styles['layout-content']}>
-          <h1>Avro to JSON</h1>
           <Row gutter={16}>
             <Col span={12}>
               <div className={avro.isInError ? styles.malformed : ''}>
-                <MonacoEditor
-                  width="100%"
-                  height="500"
-                  language="json"
-                  theme="vs-light"
-                  options={avroOptions}
-                  value={avro.value}
-                  editorWillMount={editorWillMount}
+                <CodeEditor
+                  value={avro.value.str}
                   onChange={value => changeAvro(value)}
+                  onMouseMove={position => {
+                    avroMouseMove(position);
+                  }}
                 />
               </div>
             </Col>
             <Col span={12}>
-              <MonacoEditor
-                width="100%"
-                height="500"
-                language="json"
-                theme="vs-light"
-                options={jsonOptions}
-                value={json.value}
+              <CodeEditor
+                selection={jsonSelection}
+                value={json.value.str}
                 onChange={value => changeJson(value)}
+                monacoOptions={{ readOnly: true }}
               />
             </Col>
           </Row>
@@ -98,3 +106,17 @@ export default function Editor(props: Props) {
     </Layout>
   );
 }
+
+Editor.defaultProps = {
+  avro: {
+    isInError: false,
+    value: { str: '', parsed: null, sourceMap: null },
+    position: null
+  },
+  json: {
+    value: { str: '', parsed: null, sourceMap: null }
+  },
+  changeJson: () => {},
+  changeAvro: () => {},
+  avroMouseMove: () => {}
+} as Props;
