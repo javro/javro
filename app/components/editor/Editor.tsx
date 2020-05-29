@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, Badge, Col, Layout, Row } from 'antd';
+import { Alert, Badge, Col, Drawer, Layout, Row } from 'antd';
 import { SourceMap } from 'json-source-map';
 import classNames from './Editor.css';
 import CodeEditor, {
@@ -122,31 +122,45 @@ export default function Editor(props: Props) {
                 </Badge>
 
                 <div className={classNames.codeEditor}>
-                  <CodeEditor
-                    selection={jsonSelection}
-                    value={json.value.str}
-                    onValueChange={value => changeJson(value)}
-                    monacoOptions={{ readOnly: true }}
-                  />
+                  <div
+                    style={{
+                      position: 'relative',
+                      height: 'calc(90vh - 7rem)',
+                      overflow: 'hidden'
+                    }}
+                  >
+                    <CodeEditor
+                      selection={jsonSelection}
+                      value={json.value.str}
+                      onValueChange={value => changeJson(value)}
+                      monacoOptions={{ readOnly: true }}
+                    />
+                    <Drawer
+                      title="Avro errors"
+                      placement="right"
+                      closable={false}
+                      visible={errors.length > 0}
+                      getContainer={false}
+                      width="60%"
+                      style={{ position: 'absolute' }}
+                    >
+                      {errors.map(error => (
+                        <Alert
+                          key={error.message}
+                          message={`L${error.line}: ${error.message}`}
+                          style={{
+                            marginTop: '1rem',
+                            borderColor: COLORS.ORANGE,
+                            backgroundColor: COLORS.LIGHT_ORANGE
+                          }}
+                          type="warning"
+                        />
+                      ))}
+                    </Drawer>
+                  </div>
                 </div>
               </Col>
             </Row>
-            {avro.isInError && (
-              <>
-                {errors.map(error => (
-                  <Alert
-                    key={error.message}
-                    message={`L${error.line}: ${error.message}`}
-                    style={{
-                      marginTop: '1rem',
-                      borderColor: COLORS.ORANGE,
-                      backgroundColor: COLORS.LIGHT_ORANGE
-                    }}
-                    type="warning"
-                  />
-                ))}
-              </>
-            )}
           </div>
         </Content>
       </Layout>
