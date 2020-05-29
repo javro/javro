@@ -5,6 +5,7 @@ import MonacoEditor, {
 } from 'react-monaco-editor';
 import * as monacoEditor from 'monaco-editor';
 import schema from '../avro-schema.json';
+import { COLORS } from '../../constants/theme';
 
 function triggerOnValueChange<T>(callback: (value: T) => void, value: T): void {
   const [lastValueInJson, setLastValueInJson] = useState('');
@@ -20,8 +21,8 @@ monacoEditor.editor.defineTheme('javro', {
   inherit: true,
   rules: [],
   colors: {
-    'editor.selectionBackground': '#6495ED42',
-    'editor.inactiveSelectionBackground': '#6495ED5E'
+    'editor.selectionBackground': COLORS.EXTRA_LIGHT_BLUE,
+    'editor.inactiveSelectionBackground': COLORS.LIGHT_BLUE
   }
 });
 

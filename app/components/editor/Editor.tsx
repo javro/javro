@@ -146,7 +146,7 @@ export default function Editor(props: Props) {
                     >
                       {errors.map(error => (
                         <Alert
-                          key={error.message}
+                          key={`L${error.line}: ${error.message}`}
                           message={`L${error.line}: ${error.message}`}
                           style={{
                             marginTop: '1rem',
