@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, Badge, Col, Drawer, Layout, Row } from 'antd';
+import { Badge, Col, Layout, Row } from 'antd';
 import { SourceMap } from 'json-source-map';
 import classNames from './Editor.css';
 import CodeEditor, {
@@ -10,12 +10,14 @@ import getJsonPathFromPosition from '../../services/source-map/get-json-path-fro
 import avroPathToJsonPath from '../../services/source-map/avro-path-to-json-path';
 import logo from './javro-white.png';
 import { COLORS } from '../../constants/theme';
+import ErrorDrawer from '../error-drawer/ErrorDrawer';
 
 const { Header, Content } = Layout;
 
 type Props = {
   avro: {
     isInError: boolean;
+    errorMessage: string | null;
     value: { str: string; parsed: object | null; sourceMap: SourceMap | null };
     position: { line: number; column: number } | null;
   };
@@ -93,7 +95,7 @@ export default function Editor(props: Props) {
           <div className={classNames.layoutContent}>
             <Row gutter={16}>
               <Col span={12}>
-                <Badge count={errors.length}>
+                <Badge count={Math.max(errors.length, avro.isInError ? 1 : 0)}>
                   <h3 style={{ color: COLORS.DARK_BLUE, paddingRight: '10px' }}>
                     Avro
                   </h3>
@@ -135,28 +137,11 @@ export default function Editor(props: Props) {
                       onValueChange={value => changeJson(value)}
                       monacoOptions={{ readOnly: true }}
                     />
-                    <Drawer
-                      title="Avro errors"
-                      placement="right"
-                      closable={false}
-                      visible={avro.isInError && errors.length > 0}
-                      getContainer={false}
-                      width="60%"
-                      style={{ position: 'absolute' }}
-                    >
-                      {errors.map(error => (
-                        <Alert
-                          key={`L${error.line}: ${error.message}`}
-                          message={`L${error.line}: ${error.message}`}
-                          style={{
-                            marginTop: '1rem',
-                            borderColor: COLORS.ORANGE,
-                            backgroundColor: COLORS.LIGHT_ORANGE
-                          }}
-                          type="warning"
-                        />
-                      ))}
-                    </Drawer>
+                    <ErrorDrawer
+                      isInError={avro.isInError}
+                      avroError={avro.errorMessage}
+                      editorErrors={errors}
+                    />
                   </div>
                 </div>
               </Col>
@@ -172,6 +157,7 @@ Editor.defaultProps = {
   avro: {
     isInError: false,
     value: { str: '', parsed: null, sourceMap: null },
+    errorMessage: null,
     position: null
   },
   json: {

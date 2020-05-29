@@ -32,6 +32,7 @@ export interface AvroMouseMoveAction {
 
 export interface ChangeAvroIsInErrorAction {
   type: typeof CHANGE_AVRO_IS_IN_ERROR;
+  error: string | null;
 }
 
 export function changeJson(value: {
@@ -56,9 +57,12 @@ export function changeAvro(value: {
   };
 }
 
-export function changeAvroIsInError(): ChangeAvroIsInErrorAction {
+export function changeAvroIsInError(
+  error: string | null
+): ChangeAvroIsInErrorAction {
   return {
-    type: CHANGE_AVRO_IS_IN_ERROR
+    type: CHANGE_AVRO_IS_IN_ERROR,
+    error
   };
 }
 
@@ -71,7 +75,6 @@ export function changeAvroWithDispatch(
         data: parsedAvro,
         pointers: avroSourceMap
       } = jsonSourceMapLib.parse(strAvro);
-
       const avroType = avro.Type.forSchema(parsedAvro);
       const parsedJson = avroType.sample();
       const {
@@ -95,7 +98,7 @@ export function changeAvroWithDispatch(
       );
     } catch (error) {
       dispatch(changeAvro({ str: strAvro, parsed: null, sourceMap: null }));
-      dispatch(changeAvroIsInError());
+      dispatch(changeAvroIsInError(error.message));
     }
   };
 }
