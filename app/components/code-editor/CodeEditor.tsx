@@ -20,8 +20,8 @@ monacoEditor.editor.defineTheme('javro', {
   inherit: true,
   rules: [],
   colors: {
-    'editor.selectionBackground': '#88000015',
-    'editor.inactiveSelectionBackground': '#88000015'
+    'editor.selectionBackground': '#6495ED42',
+    'editor.inactiveSelectionBackground': '#6495ED5E'
   }
 });
 
@@ -113,6 +113,7 @@ export default function CodeEditor(props: Props) {
             } as Marker)
         );
         onError(markers);
+        editor.focus();
       };
     }
   };

@@ -45,10 +45,10 @@ function json(
 
 function isInError(
   state = false,
-  action: ChangeAvroAction | ChangeAvroIsInErrorAction
+  action: ChangeJsonAction | ChangeAvroIsInErrorAction
 ) {
   switch (action.type) {
-    case CHANGE_AVRO: {
+    case CHANGE_JSON: {
       return false;
     }
     case CHANGE_AVRO_IS_IN_ERROR: {

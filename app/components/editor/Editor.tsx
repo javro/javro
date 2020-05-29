@@ -139,7 +139,7 @@ export default function Editor(props: Props) {
                       title="Avro errors"
                       placement="right"
                       closable={false}
-                      visible={errors.length > 0}
+                      visible={avro.isInError && errors.length > 0}
                       getContainer={false}
                       width="60%"
                       style={{ position: 'absolute' }}

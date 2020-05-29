@@ -71,6 +71,14 @@ export function changeAvroWithDispatch(
         data: parsedAvro,
         pointers: avroSourceMap
       } = jsonSourceMapLib.parse(strAvro);
+
+      const avroType = avro.Type.forSchema(parsedAvro);
+      const parsedJson = avroType.sample();
+      const {
+        json: strJson,
+        pointers: jsonSourceMap
+      } = jsonSourceMapLib.stringify(parsedJson, null, 4);
+
       dispatch(
         changeAvro({
           str: strAvro,
@@ -78,12 +86,6 @@ export function changeAvroWithDispatch(
           sourceMap: avroSourceMap
         })
       );
-      const avroType = avro.Type.forSchema(parsedAvro);
-      const parsedJson = avroType.sample();
-      const {
-        json: strJson,
-        pointers: jsonSourceMap
-      } = jsonSourceMapLib.stringify(parsedJson, null, 4);
       dispatch(
         changeJson({
           str: strJson,

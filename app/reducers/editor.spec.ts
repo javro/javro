@@ -40,7 +40,7 @@ it('updates avro', () => {
   expect(resultState.avro).toEqual({
     ...defaultState.avro,
     value: { str: 'aValue', parsed: {}, sourceMap: {} },
-    isInError: false
+    isInError: true
   });
 });
 
