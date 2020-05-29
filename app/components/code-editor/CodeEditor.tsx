@@ -87,27 +87,25 @@ export default function CodeEditor(props: Props) {
         onMouseMove({ line: lineNumber, column });
       }
     });
+
+    const { setModelMarkers } = monacoEditor.editor;
+    monacoEditor.editor.setModelMarkers = function(model, owner, rawMarkers) {
+      setModelMarkers.call(monacoEditor.editor, model, owner, rawMarkers);
+      const markers = rawMarkers.map(
+        marker =>
+          ({
+            message: marker.message,
+            line: marker.startLineNumber
+          } as Marker)
+      );
+      onError(markers);
+      mountedEditor.focus();
+    };
     setEditor(mountedEditor);
   };
 
   const valueOnChange = (v: string) => {
     onValueChange(v);
-
-    if (editor) {
-      const { setModelMarkers } = monacoEditor.editor;
-      monacoEditor.editor.setModelMarkers = function(model, owner, rawMarkers) {
-        setModelMarkers.call(monacoEditor.editor, model, owner, rawMarkers);
-        const markers = rawMarkers.map(
-          marker =>
-            ({
-              message: marker.message,
-              line: marker.startLineNumber
-            } as Marker)
-        );
-        onError(markers);
-        editor.focus();
-      };
-    }
   };
 
   const computedMonacoOptions = {
