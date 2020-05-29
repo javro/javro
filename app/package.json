@@ -1,8 +1,8 @@
 {
   "name": "javro",
   "productName": "javro",
-  "version": "0.0.2",
-  "description": "Electron application to convert Avro to JSON and reverse",
+  "version": "0.1.0",
+  "description": "Javro is an interface allowing you to write Avro schemas with ease, to validate it, and to preview it into JSON format with samples",
   "main": "./main.prod.js",
   "author": {
     "name": "Baptiste Lecocq & Delphin Aubin",
