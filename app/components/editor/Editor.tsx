@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, Badge, Col, Drawer, Layout, Row } from 'antd';
+import { Col, Layout, Row } from 'antd';
 import { SourceMap } from 'json-source-map';
 import classNames from './Editor.css';
 import CodeEditor, {
@@ -10,12 +10,14 @@ import getJsonPathFromPosition from '../../services/source-map/get-json-path-fro
 import avroPathToJsonPath from '../../services/source-map/avro-path-to-json-path';
 import logo from './javro-white.png';
 import { COLORS } from '../../constants/theme';
+import ErrorFeedback from '../error-feedback/ErrorFeedback';
 
 const { Header, Content } = Layout;
 
 type Props = {
   avro: {
     isInError: boolean;
+    errorMessage: string | null;
     value: { str: string; parsed: object | null; sourceMap: SourceMap | null };
     position: { line: number; column: number } | null;
   };
@@ -68,10 +70,6 @@ function getPositionFromPath(
   };
 }
 
-function getAvroEditorCssClasses(isInError: boolean) {
-  return (isInError ? `${classNames.malformed} ` : '') + classNames.codeEditor;
-}
-
 export default function Editor(props: Props) {
   const { json, changeJson, avro, changeAvro, avroMouseMove } = props;
   const [errors, setErrors] = useState([] as EditorError[]);
@@ -93,17 +91,9 @@ export default function Editor(props: Props) {
           <div className={classNames.layoutContent}>
             <Row gutter={16}>
               <Col span={12}>
-                <Badge count={errors.length}>
-                  <h3 style={{ color: COLORS.DARK_BLUE, paddingRight: '10px' }}>
-                    Avro
-                  </h3>
-                </Badge>
+                <h3 style={{ color: COLORS.DARK_BLUE }}>Avro</h3>
 
-                <div
-                  className={getAvroEditorCssClasses(
-                    avro.isInError && errors.length > 0
-                  )}
-                >
+                <div className={classNames.codeEditor}>
                   <CodeEditor
                     value={avro.value.str}
                     onValueChange={value => changeAvro(value)}
@@ -117,52 +107,25 @@ export default function Editor(props: Props) {
                 </div>
               </Col>
               <Col span={12}>
-                <Badge count={0}>
-                  <h3 style={{ color: COLORS.DARK_BLUE }}>JSON</h3>
-                </Badge>
+                <h3 style={{ color: COLORS.DARK_BLUE }}>JSON</h3>
 
                 <div className={classNames.codeEditor}>
-                  <div
-                    style={{
-                      position: 'relative',
-                      height: 'calc(90vh - 7rem)',
-                      overflow: 'hidden'
-                    }}
-                  >
-                    <CodeEditor
-                      selection={jsonSelection}
-                      value={json.value.str}
-                      onValueChange={value => changeJson(value)}
-                      monacoOptions={{ readOnly: true }}
-                    />
-                    <Drawer
-                      title="Avro errors"
-                      placement="right"
-                      closable={false}
-                      visible={avro.isInError && errors.length > 0}
-                      getContainer={false}
-                      width="60%"
-                      style={{ position: 'absolute' }}
-                    >
-                      {errors.map(error => (
-                        <Alert
-                          key={`L${error.line}: ${error.message}`}
-                          message={`L${error.line}: ${error.message}`}
-                          style={{
-                            marginTop: '1rem',
-                            borderColor: COLORS.ORANGE,
-                            backgroundColor: COLORS.LIGHT_ORANGE
-                          }}
-                          type="warning"
-                        />
-                      ))}
-                    </Drawer>
-                  </div>
+                  <CodeEditor
+                    selection={jsonSelection}
+                    value={json.value.str}
+                    onValueChange={value => changeJson(value)}
+                    monacoOptions={{ readOnly: true }}
+                  />
                 </div>
               </Col>
             </Row>
           </div>
         </Content>
+        <ErrorFeedback
+          isInError={avro.isInError}
+          avroError={avro.errorMessage}
+          editorErrors={errors}
+        />
       </Layout>
     </>
   );
@@ -172,6 +135,7 @@ Editor.defaultProps = {
   avro: {
     isInError: false,
     value: { str: '', parsed: null, sourceMap: null },
+    errorMessage: null,
     position: null
   },
   json: {

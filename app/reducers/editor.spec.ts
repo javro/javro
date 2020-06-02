@@ -10,6 +10,7 @@ import {
 const defaultState = {
   avro: {
     value: { str: '', parsed: null, sourceMap: null },
+    errorMessage: null,
     isInError: false,
     position: null
   },
@@ -28,8 +29,7 @@ it('updates avro', () => {
       ...defaultState,
       avro: {
         ...defaultState.avro,
-        value: { str: '', parsed: null, sourceMap: null },
-        isInError: true
+        value: { str: '', parsed: null, sourceMap: null }
       }
     },
     {
@@ -39,8 +39,7 @@ it('updates avro', () => {
   );
   expect(resultState.avro).toEqual({
     ...defaultState.avro,
-    value: { str: 'aValue', parsed: {}, sourceMap: {} },
-    isInError: true
+    value: { str: 'aValue', parsed: {}, sourceMap: {} }
   });
 });
 
@@ -85,9 +84,11 @@ it('handle avro errors', () => {
       }
     },
     {
-      type: CHANGE_AVRO_IS_IN_ERROR
+      type: CHANGE_AVRO_IS_IN_ERROR,
+      error: 'An error'
     }
   );
 
   expect(resultState.avro.isInError).toEqual(true);
+  expect(resultState.avro.errorMessage).toEqual('An error');
 });

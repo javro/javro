@@ -21,6 +21,7 @@ export interface EditorState {
   avro: {
     value: EditorValue;
     isInError: boolean;
+    errorMessage: string | null;
     position: { line: number; column: number } | null;
   };
   json: {
@@ -59,6 +60,22 @@ function isInError(
   }
 }
 
+function errorMessage(
+  state: string | null = null,
+  action: ChangeJsonAction | ChangeAvroIsInErrorAction
+) {
+  switch (action.type) {
+    case CHANGE_JSON: {
+      return null;
+    }
+    case CHANGE_AVRO_IS_IN_ERROR: {
+      return action.error;
+    }
+    default:
+      return state;
+  }
+}
+
 function value(
   state: EditorValue = { str: '', parsed: null, sourceMap: null },
   action: ChangeAvroAction
@@ -87,6 +104,7 @@ function position(
 
 const avro = combineReducers({
   isInError,
+  errorMessage,
   value,
   position
 });
