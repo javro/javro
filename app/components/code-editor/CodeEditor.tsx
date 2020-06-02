@@ -99,7 +99,6 @@ export default function CodeEditor(props: Props) {
           } as Marker)
       );
       onError(markers);
-      mountedEditor.focus();
     };
     setEditor(mountedEditor);
   };
