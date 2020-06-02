@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import MonacoEditor, {
   EditorDidMount,
   EditorWillMount
@@ -6,15 +6,6 @@ import MonacoEditor, {
 import * as monacoEditor from 'monaco-editor';
 import schema from '../avro-schema.json';
 import { COLORS } from '../../constants/theme';
-
-function triggerOnValueChange<T>(callback: (value: T) => void, value: T): void {
-  const [lastValueInJson, setLastValueInJson] = useState('');
-  const currentValueInJson = JSON.stringify(value);
-  if (currentValueInJson !== lastValueInJson) {
-    setLastValueInJson(currentValueInJson);
-    callback(value);
-  }
-}
 
 monacoEditor.editor.defineTheme('javro', {
   base: 'vs',
@@ -63,18 +54,18 @@ export default function CodeEditor(props: Props) {
 
   const [editor, setEditor] = useState();
 
-  triggerOnValueChange(changedSelection => {
-    if (editor && changedSelection) {
+  useEffect(() => {
+    if (editor && selection) {
       const monacoSelection = {
-        startColumn: changedSelection.start.column,
-        startLineNumber: changedSelection.start.line,
-        endColumn: changedSelection.end.column,
-        endLineNumber: changedSelection.end.line
+        startColumn: selection.start.column,
+        startLineNumber: selection.start.line,
+        endColumn: selection.end.column,
+        endLineNumber: selection.end.line
       };
       editor.setSelection(monacoSelection);
       editor.revealRangeInCenterIfOutsideViewport(monacoSelection);
     }
-  }, selection);
+  }, [selection]);
 
   const editorWillMount: EditorWillMount = monacoInstance => {
     monacoInstance.languages.json.jsonDefaults.setDiagnosticsOptions({
