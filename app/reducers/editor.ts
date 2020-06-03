@@ -11,7 +11,7 @@ import {
   ChangeJsonAction
 } from '../actions/editor';
 
-interface EditorValue {
+export interface EditorValue {
   str: string;
   parsed: object | null;
   sourceMap: SourceMap | null;
