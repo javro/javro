@@ -25,6 +25,6 @@
     "electron-rebuild": "node -r ../internals/scripts/BabelRegister.js ../internals/scripts/ElectronRebuild.js",
     "postinstall": "yarn electron-rebuild"
   },
-  "license": "MIT",
+  "license": "GPL-3.0",
   "dependencies": {}
 }
