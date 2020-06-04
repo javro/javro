@@ -122,7 +122,7 @@ export default function Editor(props: Props) {
           </div>
         </Content>
         <ErrorFeedback
-          isInError={avro.isInError}
+          isInError={avro.isInError || errors.length > 0}
           avroError={avro.errorMessage}
           editorErrors={errors}
         />

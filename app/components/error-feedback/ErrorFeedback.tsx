@@ -25,7 +25,7 @@ export default function ErrorFeedback(props: Props) {
     </p>
   ));
 
-  const avroErrorAlert = (
+  const avroErrorAlert = avroError && (
     <p>
       <Tag color="purple" className={classNames.tag}>
         Avro
