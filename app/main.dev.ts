@@ -64,7 +64,7 @@ const createWindow = async () => {
     titleBarStyle: 'hidden'
   });
 
-  mainWindow.loadURL(`file://${__dirname}/app.html?path=${argv.path}`);
+  mainWindow.loadURL(`file://${__dirname}/app.html`);
 
   // @TODO: Use 'ready-to-show' event
   //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
@@ -78,6 +78,8 @@ const createWindow = async () => {
       mainWindow.show();
       mainWindow.focus();
     }
+
+    mainWindow.webContents.send('path', argv.path);
   });
 
   mainWindow.on('closed', () => {
@@ -110,4 +112,8 @@ app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) createWindow();
+});
+
+app.on('open-file', (_, path) => {
+  if (mainWindow !== null) mainWindow.webContents.send('path', path);
 });
