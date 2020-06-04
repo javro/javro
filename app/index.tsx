@@ -7,15 +7,12 @@ import { configureStore, history } from './store/configureStore';
 import './app.global.css';
 import { changeAvroWithDispatch } from './actions/editor';
 
-const { remote } = require('electron');
-
-const { filename } = remote.getGlobal('sharedObject');
-
 const store = configureStore();
 
-if (filename) {
-  // eslint-disable-next-line consistent-return
-  const avro = fs.readFileSync(filename, 'utf8');
+const urlParams = new URLSearchParams(window.location.search);
+const path = urlParams.get('path');
+if (path && fs.existsSync(path)) {
+  const avro = fs.readFileSync(path, 'utf8');
   changeAvroWithDispatch(avro)(store.dispatch);
 }
 

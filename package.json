@@ -1,5 +1,5 @@
 {
-  "name": "@javro/javro",
+  "name": "javro",
   "productName": "javro",
   "version": "0.1.1",
   "description": "Javro is an interface allowing you to write Avro schemas with ease, to validate it, and to preview it into JSON format with samples",
@@ -287,9 +287,7 @@
     "electron-updater": "^4.2.0",
     "history": "^4.10.1",
     "json-source-map": "0.6.1",
-    "meow": "7.0.1",
     "monaco-editor-webpack-plugin": "1.9.0",
-    "open": "7.0.4",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-hot-loader": "^4.12.19",

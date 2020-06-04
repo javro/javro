@@ -8,7 +8,6 @@
  * When running `yarn build` or `yarn build-main`, this file is compiled to
  * `./app/main.prod.js` using webpack. This gives us some performance wins.
  */
-import fs from 'fs';
 import { argv } from 'yargs';
 import { app, BrowserWindow } from 'electron';
 import { autoUpdater } from 'electron-updater';
@@ -37,25 +36,6 @@ if (
   require('electron-debug')();
 }
 
-function loadFileFromCLI() {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-  // @ts-ignore
-  global.sharedObject = {};
-  let filename = '';
-
-  if (process.env.NODE_ENV === 'development') {
-    [filename] = argv._.slice(2);
-  } else {
-    [filename] = argv._;
-  }
-
-  if (fs.existsSync(filename)) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-    // @ts-ignore
-    global.sharedObject = { filename };
-  }
-}
-
 const installExtensions = async () => {
   const installer = require('electron-devtools-installer');
   const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
@@ -74,8 +54,6 @@ const createWindow = async () => {
     await installExtensions();
   }
 
-  loadFileFromCLI();
-
   mainWindow = new BrowserWindow({
     show: false,
     width: 1024,
@@ -86,7 +64,7 @@ const createWindow = async () => {
     titleBarStyle: 'hidden'
   });
 
-  mainWindow.loadURL(`file://${__dirname}/app.html`);
+  mainWindow.loadURL(`file://${__dirname}/app.html?path=${argv.path}`);
 
   // @TODO: Use 'ready-to-show' event
   //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event

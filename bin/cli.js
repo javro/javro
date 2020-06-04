@@ -18,4 +18,4 @@ if (!filename) {
   process.exit(1);
 }
 
-open(filename, { app: ['javro', filename] });
+open(filename, { app: ['javro', `--path=${filename}`] });
