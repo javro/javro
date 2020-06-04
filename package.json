@@ -1,8 +1,11 @@
 {
-  "name": "javro",
+  "name": "@javro/javro",
   "productName": "javro",
   "version": "0.1.1",
   "description": "Javro is an interface allowing you to write Avro schemas with ease, to validate it, and to preview it into JSON format with samples",
+  "bin": {
+    "javro": "bin/cli.js"
+  },
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
     "build-dll": "cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dev.dll.babel.js --colors",
@@ -284,7 +287,9 @@
     "electron-updater": "^4.2.0",
     "history": "^4.10.1",
     "json-source-map": "0.6.1",
+    "meow": "7.0.1",
     "monaco-editor-webpack-plugin": "1.9.0",
+    "open": "7.0.4",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-hot-loader": "^4.12.19",
@@ -294,7 +299,8 @@
     "react-router-dom": "^5.1.2",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
-    "source-map-support": "^0.5.16"
+    "source-map-support": "^0.5.16",
+    "yargs": "15.3.1"
   },
   "devEngines": {
     "node": ">=7.x",

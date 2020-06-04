@@ -1,5 +1,5 @@
 {
-  "name": "javro",
+  "name": "@javro/javro",
   "productName": "javro",
   "version": "0.1.1",
   "description": "Javro is an interface allowing you to write Avro schemas with ease, to validate it, and to preview it into JSON format with samples",
