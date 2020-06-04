@@ -79,7 +79,7 @@ const createWindow = async () => {
       mainWindow.focus();
     }
 
-    mainWindow.webContents.send('path', argv.path);
+    mainWindow.webContents.send('open-file', argv.path);
   });
 
   mainWindow.on('closed', () => {
@@ -115,5 +115,5 @@ app.on('activate', () => {
 });
 
 app.on('open-file', (_, path) => {
-  if (mainWindow !== null) mainWindow.webContents.send('path', path);
+  if (mainWindow !== null) mainWindow.webContents.send('open-file', path);
 });

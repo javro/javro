@@ -10,7 +10,7 @@ import { changeAvroWithDispatch } from './actions/editor';
 
 const store = configureStore();
 
-ipcRenderer.on('path', (_, path) => {
+ipcRenderer.on('open-file', (_, path) => {
   if (path && fs.existsSync(path)) {
     const avro = fs.readFileSync(path, 'utf8');
     changeAvroWithDispatch(avro)(store.dispatch);

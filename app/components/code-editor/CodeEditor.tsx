@@ -98,8 +98,12 @@ export default function CodeEditor(props: Props) {
             line: marker.startLineNumber
           } as Marker)
       );
-      onError(markers);
+
+      if (model === mountedEditor.getModel()) {
+        onError(markers);
+      }
     };
+
     setEditor(mountedEditor);
   };
 

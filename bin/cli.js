@@ -13,7 +13,6 @@ const cli = meow(`
 const filename = cli.input[0];
 
 if (!filename) {
-  // eslint-disable-next-line no-console
   console.error(cli.help);
   process.exit(1);
 }
