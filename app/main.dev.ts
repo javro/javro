@@ -8,6 +8,7 @@
  * When running `yarn build` or `yarn build-main`, this file is compiled to
  * `./app/main.prod.js` using webpack. This gives us some performance wins.
  */
+import { argv } from 'yargs';
 import { app, BrowserWindow } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
@@ -77,6 +78,8 @@ const createWindow = async () => {
       mainWindow.show();
       mainWindow.focus();
     }
+
+    mainWindow.webContents.send('open-file', argv.path);
   });
 
   mainWindow.on('closed', () => {
@@ -109,4 +112,8 @@ app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) createWindow();
+});
+
+app.on('open-file', (_, path) => {
+  if (mainWindow !== null) mainWindow.webContents.send('open-file', path);
 });

@@ -1,9 +1,15 @@
 {
   "name": "javro",
   "productName": "javro",
-  "version": "0.1.1",
+  "version": "0.0.1",
   "description": "Javro is an interface allowing you to write Avro schemas with ease, to validate it, and to preview it into JSON format with samples",
-  "main": "./main.prod.js",
+  "bin": {
+    "javro": "cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/javro/javro.git"
+  },
   "author": {
     "name": "Baptiste Lecocq & Delphin Aubin",
     "email": "javro.app@gmail.com",
@@ -21,10 +27,25 @@
       "url": "https://github.com/delphinaubin"
     }
   ],
-  "scripts": {
-    "electron-rebuild": "node -r ../internals/scripts/BabelRegister.js ../internals/scripts/ElectronRebuild.js",
-    "postinstall": "yarn electron-rebuild"
-  },
   "license": "GPL-3.0",
-  "dependencies": {}
+  "bugs": {
+    "url": "https://github.com/javro/javro/issues"
+  },
+  "keywords": [
+    "electron",
+    "boilerplate",
+    "react",
+    "redux",
+    "typescript",
+    "ts",
+    "sass",
+    "webpack",
+    "hot",
+    "reload"
+  ],
+  "homepage": "https://github.com/javro/javro#readme",
+  "dependencies": {
+    "meow": "7.0.1",
+    "open": "7.0.4"
+  }
 }

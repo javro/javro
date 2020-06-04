@@ -3,6 +3,9 @@
   "productName": "javro",
   "version": "0.1.1",
   "description": "Javro is an interface allowing you to write Avro schemas with ease, to validate it, and to preview it into JSON format with samples",
+  "bin": {
+    "javro": "bin/cli.js"
+  },
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
     "build-dll": "cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dev.dll.babel.js --colors",
@@ -107,8 +110,8 @@
   },
   "author": {
     "name": "Baptiste Lecocq & Delphin Aubin",
-    "email": "baptiste.lecocq@gmail.com",
-    "url": "https://github.com/tiste"
+    "email": "javro.app@gmail.com",
+    "url": "https://javro.github.io"
   },
   "contributors": [
     {
@@ -294,7 +297,8 @@
     "react-router-dom": "^5.1.2",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
-    "source-map-support": "^0.5.16"
+    "source-map-support": "^0.5.16",
+    "yargs": "15.3.1"
   },
   "devEngines": {
     "node": ">=7.x",
