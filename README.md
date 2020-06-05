@@ -22,6 +22,10 @@ yarn package
 DEBUG_PROD=true yarn build && DEBUG_PROD=true yarn start
 ```
 
+## Publish
+
+To publish CLI, go in `bin` folder, then `npm publish`
+
 ## Docs
 
 See our [docs and guides here](https://electron-react-boilerplate.js.org/docs/installation)
