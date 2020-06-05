@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Col, Layout, Row } from 'antd';
+import fs from 'fs';
+import React from 'react';
+import { Col, Layout, message, Row, Tag } from 'antd';
 import { SourceMap } from 'json-source-map';
 import classNames from './Editor.css';
 import CodeEditor, {
@@ -27,6 +28,9 @@ type Props = {
   changeJson: (value: string) => void;
   changeAvro: (value: string) => void;
   avroMouseMove: (position: { line: number; column: number }) => void;
+  editing: {
+    path: string | null;
+  };
 };
 
 function getJsonPath(avro: Props['avro'], json: Props['json']): string {
@@ -70,78 +74,114 @@ function getPositionFromPath(
   };
 }
 
-export default function Editor(props: Props) {
-  const { json, changeJson, avro, changeAvro, avroMouseMove } = props;
-  const [errors, setErrors] = useState([] as EditorError[]);
+export default class Editor extends React.Component<
+  Props,
+  { errors: EditorError[] }
+> {
+  static saveAvro(path: string | null, value: string) {
+    if (path) {
+      fs.writeFileSync(path, value);
+      message.success('File is saved');
+    }
+  }
 
-  const jsonSelection =
-    (json.value.sourceMap &&
-      getPositionFromPath(getJsonPath(avro, json), json.value.sourceMap)) ||
-    undefined;
+  static defaultProps = {
+    avro: {
+      isInError: false,
+      value: { str: '', parsed: null, sourceMap: null },
+      errorMessage: null,
+      position: null
+    },
+    json: {
+      value: { str: '', parsed: null, sourceMap: null }
+    },
+    changeJson: () => {},
+    changeAvro: () => {},
+    avroMouseMove: () => {}
+  };
 
-  return (
-    <>
-      <Header
-        style={{ backgroundColor: COLORS.DARK_BLUE, textAlign: 'center' }}
-      >
-        <img src={logo} style={{ height: '3.5rem' }} alt="Javro Logo" />
-      </Header>
-      <Layout>
-        <Content style={{ padding: '0 50px' }}>
-          <div className={classNames.layoutContent}>
-            <Row gutter={16}>
-              <Col span={12}>
-                <h3 style={{ color: COLORS.DARK_BLUE }}>Avro</h3>
+  constructor(props: Props) {
+    super(props);
 
-                <div className={classNames.codeEditor}>
-                  <CodeEditor
-                    value={avro.value.str}
-                    onValueChange={value => changeAvro(value)}
-                    onMouseMove={position => {
-                      avroMouseMove(position);
-                    }}
-                    onError={messages => {
-                      setErrors(messages);
-                    }}
-                  />
-                </div>
-              </Col>
-              <Col span={12}>
-                <h3 style={{ color: COLORS.DARK_BLUE }}>JSON</h3>
+    this.state = {
+      errors: []
+    };
+  }
 
-                <div className={classNames.codeEditor}>
-                  <CodeEditor
-                    selection={jsonSelection}
-                    value={json.value.str}
-                    onValueChange={value => changeJson(value)}
-                    monacoOptions={{ readOnly: true }}
-                  />
-                </div>
-              </Col>
-            </Row>
-          </div>
-        </Content>
-        <ErrorFeedback
-          isInError={avro.isInError || errors.length > 0}
-          avroError={avro.errorMessage}
-          editorErrors={errors}
-        />
-      </Layout>
-    </>
-  );
+  render() {
+    const {
+      avro,
+      changeAvro,
+      json,
+      editing,
+      changeJson,
+      avroMouseMove
+    } = this.props;
+    const { errors } = this.state;
+
+    const jsonSelection =
+      (json.value.sourceMap &&
+        getPositionFromPath(getJsonPath(avro, json), json.value.sourceMap)) ||
+      undefined;
+
+    return (
+      <>
+        <Header
+          style={{ backgroundColor: COLORS.DARK_BLUE, textAlign: 'center' }}
+        >
+          <img src={logo} style={{ height: '3.5rem' }} alt="Javro Logo" />
+        </Header>
+        <Layout>
+          <Content style={{ padding: '0 50px' }}>
+            <div className={classNames.layoutContent}>
+              <Row gutter={16}>
+                <Col span={12}>
+                  <h3 style={{ color: COLORS.DARK_BLUE }}>
+                    Avro&nbsp;
+                    {editing.path && <Tag color="purple">Editing mode</Tag>}
+                  </h3>
+
+                  <div className={classNames.codeEditor}>
+                    <CodeEditor
+                      value={avro.value.str}
+                      onValueChange={value => changeAvro(value)}
+                      onMouseMove={position => {
+                        avroMouseMove(position);
+                      }}
+                      onError={messages => {
+                        this.setState({ errors: messages });
+                      }}
+                      onSave={() => {
+                        Editor.saveAvro(
+                          this.props.editing.path,
+                          this.props.avro.value.str
+                        );
+                      }}
+                    />
+                  </div>
+                </Col>
+                <Col span={12}>
+                  <h3 style={{ color: COLORS.DARK_BLUE }}>JSON</h3>
+
+                  <div className={classNames.codeEditor}>
+                    <CodeEditor
+                      selection={jsonSelection}
+                      value={json.value.str}
+                      onValueChange={value => changeJson(value)}
+                      monacoOptions={{ readOnly: true }}
+                    />
+                  </div>
+                </Col>
+              </Row>
+            </div>
+          </Content>
+          <ErrorFeedback
+            isInError={avro.isInError || errors.length > 0}
+            avroError={avro.errorMessage}
+            editorErrors={errors}
+          />
+        </Layout>
+      </>
+    );
+  }
 }
-
-Editor.defaultProps = {
-  avro: {
-    isInError: false,
-    value: { str: '', parsed: null, sourceMap: null },
-    errorMessage: null,
-    position: null
-  },
-  json: {
-    value: { str: '', parsed: null, sourceMap: null }
-  },
-  changeJson: () => {},
-  changeAvro: () => {},
-  avroMouseMove: () => {}
-} as Props;

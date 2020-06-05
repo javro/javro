@@ -5,9 +5,11 @@ import {
   AvroMouseMoveAction,
   CHANGE_AVRO,
   CHANGE_AVRO_IS_IN_ERROR,
+  CHANGE_AVRO_PATH,
   CHANGE_JSON,
   ChangeAvroAction,
   ChangeAvroIsInErrorAction,
+  ChangeAvroPathAction,
   ChangeJsonAction
 } from '../actions/editor';
 
@@ -27,6 +29,24 @@ export interface EditorState {
   json: {
     value: EditorValue;
   };
+  editing: {
+    path: string | null;
+  };
+}
+
+function editing(
+  state: { path: string | null } = {
+    path: null
+  },
+  action: ChangeAvroPathAction
+) {
+  switch (action.type) {
+    case CHANGE_AVRO_PATH: {
+      return { ...state, path: action.path };
+    }
+    default:
+      return state;
+  }
 }
 
 function json(
@@ -111,5 +131,6 @@ const avro = combineReducers({
 
 export default combineReducers({
   json,
-  avro
+  avro,
+  editing
 });

@@ -5,6 +5,7 @@ import avro from 'avsc';
 export const CHANGE_JSON = 'CHANGE_JSON';
 export const CHANGE_AVRO = 'CHANGE_AVRO';
 export const CHANGE_AVRO_IS_IN_ERROR = 'CHANGE_AVRO_IS_IN_ERROR';
+export const CHANGE_AVRO_PATH = 'CHANGE_AVRO_PATH';
 export const AVRO_MOUSE_MOVE = 'AVRO_MOUSE_MOVE';
 
 export interface ChangeJsonAction {
@@ -35,6 +36,11 @@ export interface ChangeAvroIsInErrorAction {
   error: string | null;
 }
 
+export interface ChangeAvroPathAction {
+  type: typeof CHANGE_AVRO_PATH;
+  path: string | null;
+}
+
 export function changeJson(value: {
   str: string;
   parsed: object | null;
@@ -63,6 +69,21 @@ export function changeAvroIsInError(
   return {
     type: CHANGE_AVRO_IS_IN_ERROR,
     error
+  };
+}
+
+export function changeAvroPath(path: string | null): ChangeAvroPathAction {
+  return {
+    type: CHANGE_AVRO_PATH,
+    path
+  };
+}
+
+export function changeAvroPathWithDispatch(
+  path: string | null
+): (dispatch: Dispatch) => void {
+  return (dispatch: Dispatch) => {
+    dispatch(changeAvroPath(path));
   };
 }
 

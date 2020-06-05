@@ -34,6 +34,7 @@ type Props = {
   onMouseMove?: (position: EditorPosition) => void;
   onValueChange?: (value: string) => void;
   onError?: (messages: EditorError[]) => void;
+  onSave?: () => void;
   monacoOptions?: monacoEditor.editor.IEditorConstructionOptions;
 };
 
@@ -48,6 +49,7 @@ export default function CodeEditor(props: Props) {
     onMouseMove,
     onValueChange,
     onError,
+    onSave,
     monacoOptions,
     selection
   } = props as Required<Omit<Props, 'selection'>> & Props;
@@ -81,6 +83,13 @@ export default function CodeEditor(props: Props) {
   };
 
   const editorDidMount: EditorDidMount = mountedEditor => {
+    mountedEditor.addCommand(
+      // eslint-disable-next-line no-bitwise
+      monacoEditor.KeyMod.CtrlCmd | monacoEditor.KeyCode.KEY_S,
+      () => {
+        onSave();
+      }
+    );
     mountedEditor.onMouseMove(e => {
       if (e.target.position) {
         const { lineNumber, column } = e.target.position;
@@ -140,5 +149,6 @@ CodeEditor.defaultProps = {
   onMouseMove: () => {},
   onValueChange: () => {},
   onError: () => {},
+  onSave: () => {},
   monacoOptions: {}
 } as Required<Omit<Props, 'selection'>>;

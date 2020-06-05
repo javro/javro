@@ -4,6 +4,7 @@ import {
   AVRO_MOUSE_MOVE,
   CHANGE_AVRO,
   CHANGE_AVRO_IS_IN_ERROR,
+  CHANGE_AVRO_PATH,
   CHANGE_JSON
 } from '../actions/editor';
 
@@ -16,6 +17,9 @@ const defaultState = {
   },
   json: {
     value: { str: '', parsed: null, sourceMap: null }
+  },
+  editing: {
+    path: null
   }
 };
 
@@ -91,4 +95,15 @@ it('handle avro errors', () => {
 
   expect(resultState.avro.isInError).toEqual(true);
   expect(resultState.avro.errorMessage).toEqual('An error');
+});
+
+it('updates editing', () => {
+  const resultState = editor(undefined, {
+    type: CHANGE_AVRO_PATH,
+    path: './workspace'
+  });
+
+  expect(resultState.editing).toEqual({
+    path: './workspace'
+  });
 });
