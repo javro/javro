@@ -1,5 +1,15 @@
 ![Javro](https://javro.github.io/assets/images/demo.gif)
 
+## Install CLI
+
+> You must have installed Javro first: https://javro.github.io
+
+`npm i -g javro`
+
+## Usage
+
+`javro ~/Workspace/avro.json`
+
 ## Starting Development
 
 Start the app in the `dev` environment. This starts the renderer process in [**hot-module-replacement**](https://webpack.js.org/guides/hmr-react/) mode and starts a webpack dev server that sends hot updates to the renderer process:

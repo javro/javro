@@ -10,4 +10,4 @@ Javro is an interface allowing you to write Avro schemas with ease, to validate 
 
 ## Usage
 
-`javro ~/Workspace/avro.avsc`
+`javro ~/Workspace/avro.json`
