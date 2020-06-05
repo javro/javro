@@ -2,6 +2,7 @@
 import {
   app,
   BrowserWindow,
+  dialog,
   Menu,
   MenuItemConstructorOptions,
   shell
@@ -81,6 +82,26 @@ export default class MenuBuilder {
           accelerator: 'Command+Q',
           click: () => {
             app.quit();
+          }
+        }
+      ]
+    };
+
+    const { mainWindow } = this;
+    const subMenuFile: DarwinMenuItemConstructorOptions = {
+      label: 'File',
+      submenu: [
+        {
+          label: 'Open',
+          accelerator: 'Command+O',
+          async click() {
+            const { filePaths } = await dialog.showOpenDialog({
+              properties: ['openFile'],
+              filters: [{ name: 'JSON', extensions: ['json'] }]
+            });
+            if (filePaths[0]) {
+              mainWindow.webContents.send('open-file', filePaths[0]);
+            }
           }
         }
       ]
@@ -190,7 +211,14 @@ export default class MenuBuilder {
         ? subMenuViewDev
         : subMenuViewProd;
 
-    return [subMenuAbout, subMenuEdit, subMenuView, subMenuWindow, subMenuHelp];
+    return [
+      subMenuAbout,
+      subMenuFile,
+      subMenuEdit,
+      subMenuView,
+      subMenuWindow,
+      subMenuHelp
+    ];
   }
 
   buildDefaultTemplate() {
