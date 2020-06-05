@@ -13,7 +13,8 @@ const defaultState = {
     value: { str: '', parsed: null, sourceMap: null },
     errorMessage: null,
     isInError: false,
-    position: null
+    position: null,
+    pristine: true
   },
   json: {
     value: { str: '', parsed: null, sourceMap: null }
@@ -43,7 +44,8 @@ it('updates avro', () => {
   );
   expect(resultState.avro).toEqual({
     ...defaultState.avro,
-    value: { str: 'aValue', parsed: {}, sourceMap: {} }
+    value: { str: 'aValue', parsed: {}, sourceMap: {} },
+    pristine: false
   });
 });
 
@@ -106,4 +108,5 @@ it('updates editing', () => {
   expect(resultState.editing).toEqual({
     path: './workspace'
   });
+  expect(resultState.avro.pristine).toEqual(true);
 });

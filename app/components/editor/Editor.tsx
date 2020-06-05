@@ -21,12 +21,14 @@ type Props = {
     errorMessage: string | null;
     value: { str: string; parsed: object | null; sourceMap: SourceMap | null };
     position: { line: number; column: number } | null;
+    pristine: boolean;
   };
   json: {
     value: { str: string; parsed: object | null; sourceMap: SourceMap | null };
   };
   changeJson: (value: string) => void;
   changeAvro: (value: string) => void;
+  changeAvroPristine: (value: boolean) => void;
   avroMouseMove: (position: { line: number; column: number }) => void;
   editing: {
     path: string | null;
@@ -78,25 +80,20 @@ export default class Editor extends React.Component<
   Props,
   { errors: EditorError[] }
 > {
-  static saveAvro(path: string | null, value: string) {
-    if (path) {
-      fs.writeFileSync(path, value);
-      message.success('File is saved');
-    }
-  }
-
   static defaultProps = {
     avro: {
       isInError: false,
       value: { str: '', parsed: null, sourceMap: null },
       errorMessage: null,
-      position: null
+      position: null,
+      pristine: true
     },
     json: {
       value: { str: '', parsed: null, sourceMap: null }
     },
     changeJson: () => {},
     changeAvro: () => {},
+    changeAvroPristine: () => {},
     avroMouseMove: () => {}
   };
 
@@ -106,6 +103,14 @@ export default class Editor extends React.Component<
     this.state = {
       errors: []
     };
+  }
+
+  saveAvro(path: string | null, value: string) {
+    if (path) {
+      fs.writeFileSync(path, value);
+      message.success('File is saved');
+      this.props.changeAvroPristine(true);
+    }
   }
 
   render() {
@@ -138,7 +143,9 @@ export default class Editor extends React.Component<
                 <Col span={12}>
                   <h3 style={{ color: COLORS.DARK_BLUE }}>
                     Avro&nbsp;
-                    {editing.path && <Tag color="purple">Editing mode</Tag>}
+                    {editing.path && !avro.pristine && (
+                      <Tag color="purple">Editing mode</Tag>
+                    )}
                   </h3>
 
                   <div className={classNames.codeEditor}>
@@ -152,7 +159,7 @@ export default class Editor extends React.Component<
                         this.setState({ errors: messages });
                       }}
                       onSave={() => {
-                        Editor.saveAvro(
+                        this.saveAvro(
                           this.props.editing.path,
                           this.props.avro.value.str
                         );

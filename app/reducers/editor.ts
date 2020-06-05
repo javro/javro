@@ -6,10 +6,12 @@ import {
   CHANGE_AVRO,
   CHANGE_AVRO_IS_IN_ERROR,
   CHANGE_AVRO_PATH,
+  CHANGE_AVRO_PRISTINE,
   CHANGE_JSON,
   ChangeAvroAction,
   ChangeAvroIsInErrorAction,
   ChangeAvroPathAction,
+  ChangeAvroPristineAction,
   ChangeJsonAction
 } from '../actions/editor';
 
@@ -25,6 +27,7 @@ export interface EditorState {
     isInError: boolean;
     errorMessage: string | null;
     position: { line: number; column: number } | null;
+    pristine: boolean;
   };
   json: {
     value: EditorValue;
@@ -122,11 +125,31 @@ function position(
   }
 }
 
+function pristine(
+  state = true,
+  action: ChangeAvroAction | ChangeAvroPathAction | ChangeAvroPristineAction
+) {
+  switch (action.type) {
+    case CHANGE_AVRO: {
+      return false;
+    }
+    case CHANGE_AVRO_PATH: {
+      return true;
+    }
+    case CHANGE_AVRO_PRISTINE: {
+      return action.value;
+    }
+    default:
+      return state;
+  }
+}
+
 const avro = combineReducers({
   isInError,
   errorMessage,
   value,
-  position
+  position,
+  pristine
 });
 
 export default combineReducers({

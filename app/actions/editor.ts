@@ -6,6 +6,7 @@ export const CHANGE_JSON = 'CHANGE_JSON';
 export const CHANGE_AVRO = 'CHANGE_AVRO';
 export const CHANGE_AVRO_IS_IN_ERROR = 'CHANGE_AVRO_IS_IN_ERROR';
 export const CHANGE_AVRO_PATH = 'CHANGE_AVRO_PATH';
+export const CHANGE_AVRO_PRISTINE = 'CHANGE_AVRO_PRISTINE';
 export const AVRO_MOUSE_MOVE = 'AVRO_MOUSE_MOVE';
 
 export interface ChangeJsonAction {
@@ -34,6 +35,11 @@ export interface AvroMouseMoveAction {
 export interface ChangeAvroIsInErrorAction {
   type: typeof CHANGE_AVRO_IS_IN_ERROR;
   error: string | null;
+}
+
+export interface ChangeAvroPristineAction {
+  type: typeof CHANGE_AVRO_PRISTINE;
+  value: boolean;
 }
 
 export interface ChangeAvroPathAction {
@@ -69,6 +75,21 @@ export function changeAvroIsInError(
   return {
     type: CHANGE_AVRO_IS_IN_ERROR,
     error
+  };
+}
+
+export function changeAvroPristine(value: boolean): ChangeAvroPristineAction {
+  return {
+    type: CHANGE_AVRO_PRISTINE,
+    value
+  };
+}
+
+export function changeAvroPristineWithDispatch(
+  value: boolean
+): (dispatch: Dispatch) => void {
+  return (dispatch: Dispatch) => {
+    dispatch(changeAvroPristine(value));
   };
 }
 

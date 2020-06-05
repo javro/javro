@@ -16,9 +16,13 @@ const store = configureStore();
 
 ipcRenderer.on('open-file', (_, path) => {
   if (path && fs.existsSync(path)) {
-    const avro = fs.readFileSync(path, 'utf8');
-    changeAvroWithDispatch(avro)(store.dispatch);
-    changeAvroPathWithDispatch(path)(store.dispatch);
+    if (store.getState().editor.avro.pristine) {
+      const avro = fs.readFileSync(path, 'utf8');
+      changeAvroWithDispatch(avro)(store.dispatch);
+      changeAvroPathWithDispatch(path)(store.dispatch);
+    } else {
+      message.error('A file with changes is already opened.');
+    }
   }
 });
 
