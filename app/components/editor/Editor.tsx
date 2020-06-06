@@ -1,7 +1,9 @@
 import fs from 'fs';
 import React from 'react';
-import { Col, Layout, message, Row, Tag } from 'antd';
+import { Breadcrumb, Col, Layout, message, Row, Tag } from 'antd';
 import { SourceMap } from 'json-source-map';
+import { takeRight } from 'lodash';
+import { EditOutlined } from '@ant-design/icons';
 import classNames from './Editor.css';
 import CodeEditor, {
   EditorError,
@@ -139,14 +141,26 @@ export default class Editor extends React.Component<
         <Layout>
           <Content style={{ padding: '0 50px' }}>
             <div className={classNames.layoutContent}>
+              {editing.path && (
+                <Breadcrumb>
+                  {takeRight(editing.path.split('/'), 3).map((value, index) => (
+                    // eslint-disable-next-line react/no-array-index-key
+                    <Breadcrumb.Item key={`${value}_${index}`}>
+                      {value}
+                    </Breadcrumb.Item>
+                  ))}
+                  {!avro.pristine && (
+                    <Breadcrumb.Item>
+                      <Tag icon={<EditOutlined />} color="processing">
+                        edited
+                      </Tag>
+                    </Breadcrumb.Item>
+                  )}
+                </Breadcrumb>
+              )}
               <Row gutter={16}>
                 <Col span={12}>
-                  <h3 style={{ color: COLORS.DARK_BLUE }}>
-                    Avro&nbsp;
-                    {editing.path && !avro.pristine && (
-                      <Tag color="purple">Editing mode</Tag>
-                    )}
-                  </h3>
+                  <h3 style={{ color: COLORS.DARK_BLUE }}>Avro</h3>
 
                   <div className={classNames.codeEditor}>
                     <CodeEditor

@@ -21,7 +21,7 @@ ipcRenderer.on('open-file', (_, path) => {
       changeAvroWithDispatch(avro)(store.dispatch);
       changeAvroPathWithDispatch(path)(store.dispatch);
     } else {
-      message.error('A file with changes is already opened.');
+      message.error('You currently have an opened file with changes.');
     }
   }
 });

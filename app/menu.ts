@@ -1,4 +1,4 @@
-/* eslint @typescript-eslint/ban-ts-ignore: off */
+/* eslint @typescript-eslint/ban-ts-ignore: off, import/no-cycle: off */
 import {
   app,
   BrowserWindow,
@@ -7,6 +7,8 @@ import {
   MenuItemConstructorOptions,
   shell
 } from 'electron';
+import { createWindow } from './main.dev';
+import { getMainWindow } from './main-window';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;
@@ -87,12 +89,18 @@ export default class MenuBuilder {
       ]
     };
 
-    const { mainWindow } = this;
     const subMenuFile: DarwinMenuItemConstructorOptions = {
       label: 'File',
       submenu: [
         {
-          label: 'Open',
+          label: 'New',
+          accelerator: 'Command+N',
+          async click() {
+            createWindow(true);
+          }
+        },
+        {
+          label: 'Open Avro',
           accelerator: 'Command+O',
           async click() {
             const { filePaths } = await dialog.showOpenDialog({
@@ -100,7 +108,10 @@ export default class MenuBuilder {
               filters: [{ name: 'JSON', extensions: ['json'] }]
             });
             if (filePaths[0]) {
-              mainWindow.webContents.send('open-file', filePaths[0]);
+              const mainWindow = getMainWindow();
+              if (mainWindow) {
+                mainWindow.webContents.send('open-file', filePaths[0]);
+              }
             }
           }
         }
