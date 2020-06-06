@@ -36,6 +36,10 @@ DEBUG_PROD=true yarn build && DEBUG_PROD=true yarn start
 
 To publish CLI, go in `bin` folder, then `npm publish`
 
-## Docs
+## Auto updater
 
-See our [docs and guides here](https://electron-react-boilerplate.js.org/docs/installation)
+`git clone https://github.com/zeit/hazel`
+
+cd `hazel`
+
+`vercel -e ACCOUNT="javro" -e REPOSITORY="javro"`
