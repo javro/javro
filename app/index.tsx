@@ -2,6 +2,7 @@ import fs from 'fs';
 import React, { Fragment } from 'react';
 import { render } from 'react-dom';
 import { ipcRenderer } from 'electron';
+import { message } from 'antd';
 import { AppContainer as ReactHotAppContainer } from 'react-hot-loader';
 import Root from './containers/Root';
 import { configureStore, history } from './store/configureStore';
@@ -15,6 +16,10 @@ ipcRenderer.on('open-file', (_, path) => {
     const avro = fs.readFileSync(path, 'utf8');
     changeAvroWithDispatch(avro)(store.dispatch);
   }
+});
+
+ipcRenderer.on('message', (_, text) => {
+  message.info(text);
 });
 
 const AppContainer = process.env.PLAIN_HMR ? Fragment : ReactHotAppContainer;

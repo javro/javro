@@ -9,7 +9,7 @@
  * `./app/main.prod.js` using webpack. This gives us some performance wins.
  */
 import { argv } from 'yargs';
-import { app, BrowserWindow, dialog } from 'electron';
+import { app, BrowserWindow } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
@@ -19,9 +19,11 @@ export default class AppUpdater {
     log.transports.file.level = 'info';
     autoUpdater.logger = log;
 
-    const server = 'http://javro-update-server.now.sh';
-    const feed = `${server}/update/${process.platform}/${app.getVersion()}`;
-    autoUpdater.setFeedURL(feed);
+    autoUpdater.setFeedURL({
+      provider: 'github',
+      owner: 'javro',
+      repo: 'javro'
+    });
 
     autoUpdater.checkForUpdatesAndNotify();
   }
@@ -123,20 +125,26 @@ app.on('open-file', (_, path) => {
   if (mainWindow !== null) mainWindow.webContents.send('open-file', path);
 });
 
-autoUpdater.on('update-downloaded', (_, releaseNotes, releaseName) => {
-  const dialogOpts = {
-    type: 'info',
-    buttons: ['Restart', 'Later'],
-    title: 'Application Update',
-    message: process.platform === 'win32' ? releaseNotes : releaseName,
-    detail: 'A new version has been downloaded. Restart app to apply updates.'
-  };
+autoUpdater.on('update-available', () => {
+  if (mainWindow !== null)
+    mainWindow.webContents.send(
+      'message',
+      'Update available. Keep your app opened. You will be informed when it is downloaded.'
+    );
+});
 
-  dialog
-    .showMessageBox(dialogOpts)
-    .then(returnValue => {
-      if (returnValue.response === 0) autoUpdater.quitAndInstall();
-      return returnValue;
-    })
-    .catch(() => {});
+autoUpdater.on('error', err => {
+  if (mainWindow !== null)
+    mainWindow.webContents.send(
+      'message',
+      `Error in auto-updater: ${err.message}`
+    );
+});
+
+autoUpdater.on('update-downloaded', () => {
+  if (mainWindow !== null)
+    mainWindow.webContents.send(
+      'message',
+      'Update downloaded. You can restart app to apply update.'
+    );
 });
