@@ -4,8 +4,7 @@ import {
   BrowserWindow,
   dialog,
   Menu,
-  MenuItemConstructorOptions,
-  shell
+  MenuItemConstructorOptions
 } from 'electron';
 import { createWindow } from './main.dev';
 import { getActiveWindow } from './active-window';
@@ -179,29 +178,10 @@ export default class MenuBuilder {
       label: 'Help',
       submenu: [
         {
-          label: 'Learn More',
+          label: 'Info',
+          accelerator: 'Command+I',
           click() {
-            shell.openExternal('https://electronjs.org');
-          }
-        },
-        {
-          label: 'Documentation',
-          click() {
-            shell.openExternal(
-              'https://github.com/electron/electron/tree/master/docs#readme'
-            );
-          }
-        },
-        {
-          label: 'Community Discussions',
-          click() {
-            shell.openExternal('https://www.electronjs.org/community');
-          }
-        },
-        {
-          label: 'Search Issues',
-          click() {
-            shell.openExternal('https://github.com/electron/electron/issues');
+            app.showAboutPanel();
           }
         }
       ]
@@ -297,29 +277,10 @@ export default class MenuBuilder {
         label: 'Help',
         submenu: [
           {
-            label: 'Learn More',
+            label: 'Info',
+            accelerator: 'Ctrl+I',
             click() {
-              shell.openExternal('https://electronjs.org');
-            }
-          },
-          {
-            label: 'Documentation',
-            click() {
-              shell.openExternal(
-                'https://github.com/electron/electron/tree/master/docs#readme'
-              );
-            }
-          },
-          {
-            label: 'Community Discussions',
-            click() {
-              shell.openExternal('https://www.electronjs.org/community');
-            }
-          },
-          {
-            label: 'Search Issues',
-            click() {
-              shell.openExternal('https://github.com/electron/electron/issues');
+              app.showAboutPanel();
             }
           }
         ]
