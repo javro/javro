@@ -5,10 +5,14 @@ import {
   AvroMouseMoveAction,
   CHANGE_AVRO,
   CHANGE_AVRO_IS_IN_ERROR,
+  CHANGE_AVRO_PATH,
   CHANGE_JSON,
   ChangeAvroAction,
   ChangeAvroIsInErrorAction,
-  ChangeJsonAction
+  ChangeAvroPathAction,
+  ChangeJsonAction,
+  SAVE_AVRO_SUCCESS,
+  SaveAvroSuccessAction
 } from '../actions/editor';
 
 export interface EditorValue {
@@ -23,10 +27,29 @@ export interface EditorState {
     isInError: boolean;
     errorMessage: string | null;
     position: { line: number; column: number } | null;
+    isPristine: boolean;
   };
   json: {
     value: EditorValue;
   };
+  editing: {
+    path: string | null;
+  };
+}
+
+function editing(
+  state: { path: string | null } = {
+    path: null
+  },
+  action: ChangeAvroPathAction
+) {
+  switch (action.type) {
+    case CHANGE_AVRO_PATH: {
+      return { ...state, path: action.path };
+    }
+    default:
+      return state;
+  }
 }
 
 function json(
@@ -102,14 +125,35 @@ function position(
   }
 }
 
+function isPristine(
+  state = true,
+  action: ChangeAvroAction | ChangeAvroPathAction | SaveAvroSuccessAction
+) {
+  switch (action.type) {
+    case CHANGE_AVRO: {
+      return false;
+    }
+    case CHANGE_AVRO_PATH: {
+      return true;
+    }
+    case SAVE_AVRO_SUCCESS: {
+      return true;
+    }
+    default:
+      return state;
+  }
+}
+
 const avro = combineReducers({
   isInError,
   errorMessage,
   value,
-  position
+  position,
+  isPristine
 });
 
 export default combineReducers({
   json,
-  avro
+  avro,
+  editing
 });

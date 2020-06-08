@@ -1,4 +1,4 @@
-/* eslint global-require: off, no-console: off */
+/* eslint global-require: off, no-console: off, import/no-cycle: off */
 
 /**
  * This module executes inside of electron's main process. You can start
@@ -13,6 +13,7 @@ import { app, BrowserWindow } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
+import { getActiveWindow, setActiveWindow } from './active-window';
 
 export default class AppUpdater {
   constructor() {
@@ -28,8 +29,6 @@ export default class AppUpdater {
     autoUpdater.checkForUpdatesAndNotify();
   }
 }
-
-let mainWindow: BrowserWindow | null = null;
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -53,15 +52,14 @@ const installExtensions = async () => {
   ).catch(console.log);
 };
 
-const createWindow = async () => {
+export const createWindow = async (blank = false) => {
   if (
     process.env.NODE_ENV === 'development' ||
     process.env.DEBUG_PROD === 'true'
   ) {
     await installExtensions();
   }
-
-  mainWindow = new BrowserWindow({
+  const mainWindow = new BrowserWindow({
     show: false,
     width: 1024,
     height: 728,
@@ -86,11 +84,13 @@ const createWindow = async () => {
       mainWindow.focus();
     }
 
-    mainWindow.webContents.send('open-file', argv.path);
+    if (!blank) {
+      mainWindow.webContents.send('open-file', argv.path);
+    }
   });
 
   mainWindow.on('closed', () => {
-    mainWindow = null;
+    setActiveWindow(null);
   });
 
   const menuBuilder = new MenuBuilder(mainWindow);
@@ -113,37 +113,45 @@ app.on('window-all-closed', () => {
   }
 });
 
-app.on('ready', createWindow);
+app.on('ready', () => createWindow());
 
 app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) createWindow();
+  if (getActiveWindow() === null) createWindow();
+});
+
+app.on('browser-window-focus', (_, focusedWindow) => {
+  setActiveWindow(focusedWindow);
 });
 
 app.on('open-file', (_, path) => {
-  if (mainWindow !== null) mainWindow.webContents.send('open-file', path);
+  const activeWindow = getActiveWindow();
+  if (activeWindow !== null) activeWindow.webContents.send('open-file', path);
 });
 
 autoUpdater.on('update-available', () => {
-  if (mainWindow !== null)
-    mainWindow.webContents.send(
+  const activeWindow = getActiveWindow();
+  if (activeWindow !== null)
+    activeWindow.webContents.send(
       'message',
       'Update available. Keep your app opened,  you will be informed when it will be downloaded.'
     );
 });
 
 autoUpdater.on('error', err => {
-  if (mainWindow !== null)
-    mainWindow.webContents.send(
+  const activeWindow = getActiveWindow();
+  if (activeWindow !== null)
+    activeWindow.webContents.send(
       'message',
       `Error in auto-updater: ${err.message}`
     );
 });
 
 autoUpdater.on('update-downloaded', () => {
-  if (mainWindow !== null)
-    mainWindow.webContents.send(
+  const activeWindow = getActiveWindow();
+  if (activeWindow !== null)
+    activeWindow.webContents.send(
       'message',
       'Update downloaded. You can restart app to apply update.'
     );

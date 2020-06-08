@@ -7,14 +7,22 @@ import { AppContainer as ReactHotAppContainer } from 'react-hot-loader';
 import Root from './containers/Root';
 import { configureStore, history } from './store/configureStore';
 import './app.global.css';
-import { changeAvroWithDispatch } from './actions/editor';
+import {
+  changeAvroPathWithDispatch,
+  changeAvroWithDispatch
+} from './actions/editor';
 
 const store = configureStore();
 
 ipcRenderer.on('open-file', (_, path) => {
   if (path && fs.existsSync(path)) {
-    const avro = fs.readFileSync(path, 'utf8');
-    changeAvroWithDispatch(avro)(store.dispatch);
+    if (store.getState().editor.avro.isPristine) {
+      const avro = fs.readFileSync(path, 'utf8');
+      changeAvroWithDispatch(avro)(store.dispatch);
+      changeAvroPathWithDispatch(path)(store.dispatch);
+    } else {
+      message.error('You currently have an opened file with changes.');
+    }
   }
 });
 

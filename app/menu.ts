@@ -1,11 +1,13 @@
-/* eslint @typescript-eslint/ban-ts-ignore: off */
+/* eslint @typescript-eslint/ban-ts-ignore: off, import/no-cycle: off */
 import {
   app,
   BrowserWindow,
+  dialog,
   Menu,
-  MenuItemConstructorOptions,
-  shell
+  MenuItemConstructorOptions
 } from 'electron';
+import { createWindow } from './main.dev';
+import { getActiveWindow } from './active-window';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;
@@ -85,6 +87,26 @@ export default class MenuBuilder {
         }
       ]
     };
+
+    const subMenuFile: DarwinMenuItemConstructorOptions = {
+      label: 'File',
+      submenu: [
+        {
+          label: 'New',
+          accelerator: 'Command+N',
+          async click() {
+            createWindow(true);
+          }
+        },
+        {
+          label: 'Open Avro',
+          accelerator: 'Command+O',
+          async click() {
+            await MenuBuilder.openFile();
+          }
+        }
+      ]
+    };
     const subMenuEdit: DarwinMenuItemConstructorOptions = {
       label: 'Edit',
       submenu: [
@@ -156,29 +178,10 @@ export default class MenuBuilder {
       label: 'Help',
       submenu: [
         {
-          label: 'Learn More',
+          label: 'Info',
+          accelerator: 'Command+I',
           click() {
-            shell.openExternal('https://electronjs.org');
-          }
-        },
-        {
-          label: 'Documentation',
-          click() {
-            shell.openExternal(
-              'https://github.com/electron/electron/tree/master/docs#readme'
-            );
-          }
-        },
-        {
-          label: 'Community Discussions',
-          click() {
-            shell.openExternal('https://www.electronjs.org/community');
-          }
-        },
-        {
-          label: 'Search Issues',
-          click() {
-            shell.openExternal('https://github.com/electron/electron/issues');
+            app.showAboutPanel();
           }
         }
       ]
@@ -190,7 +193,14 @@ export default class MenuBuilder {
         ? subMenuViewDev
         : subMenuViewProd;
 
-    return [subMenuAbout, subMenuEdit, subMenuView, subMenuWindow, subMenuHelp];
+    return [
+      subMenuAbout,
+      subMenuFile,
+      subMenuEdit,
+      subMenuView,
+      subMenuWindow,
+      subMenuHelp
+    ];
   }
 
   buildDefaultTemplate() {
@@ -199,8 +209,18 @@ export default class MenuBuilder {
         label: '&File',
         submenu: [
           {
-            label: '&Open',
-            accelerator: 'Ctrl+O'
+            label: '&New',
+            accelerator: 'Ctrl+N',
+            async click() {
+              createWindow(true);
+            }
+          },
+          {
+            label: '&Open Avro',
+            accelerator: 'Ctrl+O',
+            async click() {
+              await MenuBuilder.openFile();
+            }
           },
           {
             label: '&Close',
@@ -257,29 +277,10 @@ export default class MenuBuilder {
         label: 'Help',
         submenu: [
           {
-            label: 'Learn More',
+            label: 'Info',
+            accelerator: 'Ctrl+I',
             click() {
-              shell.openExternal('https://electronjs.org');
-            }
-          },
-          {
-            label: 'Documentation',
-            click() {
-              shell.openExternal(
-                'https://github.com/electron/electron/tree/master/docs#readme'
-              );
-            }
-          },
-          {
-            label: 'Community Discussions',
-            click() {
-              shell.openExternal('https://www.electronjs.org/community');
-            }
-          },
-          {
-            label: 'Search Issues',
-            click() {
-              shell.openExternal('https://github.com/electron/electron/issues');
+              app.showAboutPanel();
             }
           }
         ]
@@ -287,5 +288,18 @@ export default class MenuBuilder {
     ];
 
     return templateDefault;
+  }
+
+  private static async openFile() {
+    const { filePaths } = await dialog.showOpenDialog({
+      properties: ['openFile'],
+      filters: [{ name: 'JSON', extensions: ['json'] }]
+    });
+    if (filePaths[0]) {
+      const activeWindow = getActiveWindow();
+      if (activeWindow) {
+        activeWindow.webContents.send('open-file', filePaths[0]);
+      }
+    }
   }
 }
