@@ -129,7 +129,7 @@ autoUpdater.on('update-available', () => {
   if (mainWindow !== null)
     mainWindow.webContents.send(
       'message',
-      'Update available. Keep your app opened. You will be informed when it is downloaded.'
+      'Update available. Keep your app opened,  you will be informed when it will be downloaded.'
     );
 });
 
