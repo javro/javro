@@ -131,6 +131,7 @@ app.on('open-file', (_, path) => {
 });
 
 autoUpdater.on('update-available', () => {
+  const mainWindow = getMainWindow();
   if (mainWindow !== null)
     mainWindow.webContents.send(
       'message',
@@ -139,6 +140,7 @@ autoUpdater.on('update-available', () => {
 });
 
 autoUpdater.on('error', err => {
+  const mainWindow = getMainWindow();
   if (mainWindow !== null)
     mainWindow.webContents.send(
       'message',
@@ -147,6 +149,7 @@ autoUpdater.on('error', err => {
 });
 
 autoUpdater.on('update-downloaded', () => {
+  const mainWindow = getMainWindow();
   if (mainWindow !== null)
     mainWindow.webContents.send(
       'message',
