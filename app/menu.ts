@@ -178,11 +178,7 @@ export default class MenuBuilder {
       label: 'Help',
       submenu: [
         {
-          label: 'Info',
-          accelerator: 'Command+I',
-          click() {
-            app.showAboutPanel();
-          }
+          label: `Version ${app.getVersion()}`
         }
       ]
     };
@@ -277,11 +273,7 @@ export default class MenuBuilder {
         label: 'Help',
         submenu: [
           {
-            label: 'Info',
-            accelerator: 'Ctrl+I',
-            click() {
-              app.showAboutPanel();
-            }
+            label: `Version ${app.getVersion()}`
           }
         ]
       }
