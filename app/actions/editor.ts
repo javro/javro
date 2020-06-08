@@ -1,12 +1,14 @@
 import { Dispatch } from 'redux';
 import * as jsonSourceMapLib from 'json-source-map';
 import avro from 'avsc';
+import fs from 'fs';
+import { message as antMessage } from 'antd';
 
 export const CHANGE_JSON = 'CHANGE_JSON';
 export const CHANGE_AVRO = 'CHANGE_AVRO';
 export const CHANGE_AVRO_IS_IN_ERROR = 'CHANGE_AVRO_IS_IN_ERROR';
 export const CHANGE_AVRO_PATH = 'CHANGE_AVRO_PATH';
-export const CHANGE_AVRO_PRISTINE = 'CHANGE_AVRO_PRISTINE';
+export const SAVE_AVRO_SUCCESS = 'SAVE_AVRO_SUCCESS';
 export const AVRO_MOUSE_MOVE = 'AVRO_MOUSE_MOVE';
 
 export interface ChangeJsonAction {
@@ -37,9 +39,8 @@ export interface ChangeAvroIsInErrorAction {
   error: string | null;
 }
 
-export interface ChangeAvroPristineAction {
-  type: typeof CHANGE_AVRO_PRISTINE;
-  value: boolean;
+export interface SaveAvroSuccessAction {
+  type: typeof SAVE_AVRO_SUCCESS;
 }
 
 export interface ChangeAvroPathAction {
@@ -75,21 +76,6 @@ export function changeAvroIsInError(
   return {
     type: CHANGE_AVRO_IS_IN_ERROR,
     error
-  };
-}
-
-export function changeAvroPristine(value: boolean): ChangeAvroPristineAction {
-  return {
-    type: CHANGE_AVRO_PRISTINE,
-    value
-  };
-}
-
-export function changeAvroPristineWithDispatch(
-  value: boolean
-): (dispatch: Dispatch) => void {
-  return (dispatch: Dispatch) => {
-    dispatch(changeAvroPristine(value));
   };
 }
 
@@ -151,5 +137,26 @@ export function avroMouseMove(
   return {
     type: AVRO_MOUSE_MOVE,
     position
+  };
+}
+
+function saveAvroSuccess(): SaveAvroSuccessAction {
+  return {
+    type: SAVE_AVRO_SUCCESS
+  };
+}
+
+export function saveAvroWithDispatch(
+  path: string,
+  value: string
+): (dispatch: Dispatch) => void {
+  return (dispatch: Dispatch) => {
+    try {
+      fs.writeFileSync(path, value);
+      dispatch(saveAvroSuccess());
+      antMessage.success('File is saved');
+    } catch (e) {
+      antMessage.error(`Error occurred while saving file: ${e.message}`);
+    }
   };
 }

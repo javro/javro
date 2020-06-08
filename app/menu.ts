@@ -8,7 +8,7 @@ import {
   shell
 } from 'electron';
 import { createWindow } from './main.dev';
-import { getMainWindow } from './main-window';
+import { getActiveWindow } from './active-window';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;
@@ -335,9 +335,9 @@ export default class MenuBuilder {
       filters: [{ name: 'JSON', extensions: ['json'] }]
     });
     if (filePaths[0]) {
-      const mainWindow = getMainWindow();
-      if (mainWindow) {
-        mainWindow.webContents.send('open-file', filePaths[0]);
+      const activeWindow = getActiveWindow();
+      if (activeWindow) {
+        activeWindow.webContents.send('open-file', filePaths[0]);
       }
     }
   }

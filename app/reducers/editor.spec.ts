@@ -14,7 +14,7 @@ const defaultState = {
     errorMessage: null,
     isInError: false,
     position: null,
-    pristine: true
+    isPristine: true
   },
   json: {
     value: { str: '', parsed: null, sourceMap: null }
@@ -45,7 +45,7 @@ it('updates avro', () => {
   expect(resultState.avro).toEqual({
     ...defaultState.avro,
     value: { str: 'aValue', parsed: {}, sourceMap: {} },
-    pristine: false
+    isPristine: false
   });
 });
 
@@ -108,5 +108,5 @@ it('updates editing', () => {
   expect(resultState.editing).toEqual({
     path: './workspace'
   });
-  expect(resultState.avro.pristine).toEqual(true);
+  expect(resultState.avro.isPristine).toEqual(true);
 });

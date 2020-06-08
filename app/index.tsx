@@ -16,7 +16,7 @@ const store = configureStore();
 
 ipcRenderer.on('open-file', (_, path) => {
   if (path && fs.existsSync(path)) {
-    if (store.getState().editor.avro.pristine) {
+    if (store.getState().editor.avro.isPristine) {
       const avro = fs.readFileSync(path, 'utf8');
       changeAvroWithDispatch(avro)(store.dispatch);
       changeAvroPathWithDispatch(path)(store.dispatch);

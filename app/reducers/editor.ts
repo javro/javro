@@ -6,13 +6,13 @@ import {
   CHANGE_AVRO,
   CHANGE_AVRO_IS_IN_ERROR,
   CHANGE_AVRO_PATH,
-  CHANGE_AVRO_PRISTINE,
   CHANGE_JSON,
   ChangeAvroAction,
   ChangeAvroIsInErrorAction,
   ChangeAvroPathAction,
-  ChangeAvroPristineAction,
-  ChangeJsonAction
+  ChangeJsonAction,
+  SAVE_AVRO_SUCCESS,
+  SaveAvroSuccessAction
 } from '../actions/editor';
 
 export interface EditorValue {
@@ -27,7 +27,7 @@ export interface EditorState {
     isInError: boolean;
     errorMessage: string | null;
     position: { line: number; column: number } | null;
-    pristine: boolean;
+    isPristine: boolean;
   };
   json: {
     value: EditorValue;
@@ -125,9 +125,9 @@ function position(
   }
 }
 
-function pristine(
+function isPristine(
   state = true,
-  action: ChangeAvroAction | ChangeAvroPathAction | ChangeAvroPristineAction
+  action: ChangeAvroAction | ChangeAvroPathAction | SaveAvroSuccessAction
 ) {
   switch (action.type) {
     case CHANGE_AVRO: {
@@ -136,8 +136,8 @@ function pristine(
     case CHANGE_AVRO_PATH: {
       return true;
     }
-    case CHANGE_AVRO_PRISTINE: {
-      return action.value;
+    case SAVE_AVRO_SUCCESS: {
+      return true;
     }
     default:
       return state;
@@ -149,7 +149,7 @@ const avro = combineReducers({
   errorMessage,
   value,
   position,
-  pristine
+  isPristine
 });
 
 export default combineReducers({

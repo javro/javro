@@ -1,6 +1,5 @@
-import fs from 'fs';
 import React from 'react';
-import { Breadcrumb, Col, Layout, message, Row, Tag } from 'antd';
+import { Breadcrumb, Col, Layout, Row, Tag } from 'antd';
 import { SourceMap } from 'json-source-map';
 import { takeRight } from 'lodash';
 import { EditOutlined } from '@ant-design/icons';
@@ -23,14 +22,14 @@ type Props = {
     errorMessage: string | null;
     value: { str: string; parsed: object | null; sourceMap: SourceMap | null };
     position: { line: number; column: number } | null;
-    pristine: boolean;
+    isPristine: boolean;
   };
   json: {
     value: { str: string; parsed: object | null; sourceMap: SourceMap | null };
   };
   changeJson: (value: string) => void;
   changeAvro: (value: string) => void;
-  changeAvroPristine: (value: boolean) => void;
+  saveAvro: (path: string, value: string) => void;
   avroMouseMove: (position: { line: number; column: number }) => void;
   editing: {
     path: string | null;
@@ -88,14 +87,14 @@ export default class Editor extends React.Component<
       value: { str: '', parsed: null, sourceMap: null },
       errorMessage: null,
       position: null,
-      pristine: true
+      isPristine: true
     },
     json: {
       value: { str: '', parsed: null, sourceMap: null }
     },
     changeJson: () => {},
     changeAvro: () => {},
-    changeAvroPristine: () => {},
+    saveAvro: () => {},
     avroMouseMove: () => {}
   };
 
@@ -107,11 +106,9 @@ export default class Editor extends React.Component<
     };
   }
 
-  saveAvro(path: string | null, value: string) {
+  handleSaveAvro(path: string | null, value: string) {
     if (path) {
-      fs.writeFileSync(path, value);
-      message.success('File is saved');
-      this.props.changeAvroPristine(true);
+      this.props.saveAvro(path, value);
     }
   }
 
@@ -149,7 +146,7 @@ export default class Editor extends React.Component<
                       {value}
                     </Breadcrumb.Item>
                   ))}
-                  {!avro.pristine && (
+                  {!avro.isPristine && (
                     <Breadcrumb.Item>
                       <Tag icon={<EditOutlined />} color="processing">
                         edited
@@ -173,7 +170,7 @@ export default class Editor extends React.Component<
                         this.setState({ errors: messages });
                       }}
                       onSave={() => {
-                        this.saveAvro(
+                        this.handleSaveAvro(
                           this.props.editing.path,
                           this.props.avro.value.str
                         );

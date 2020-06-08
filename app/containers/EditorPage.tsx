@@ -4,8 +4,8 @@ import Editor from '../components/editor/Editor';
 import { JavroStateType } from '../reducers/types';
 import {
   avroMouseMove,
-  changeAvroPristineWithDispatch,
-  changeAvroWithDispatch
+  changeAvroWithDispatch,
+  saveAvroWithDispatch
 } from '../actions/editor';
 
 function mapStateToProps(state: JavroStateType) {
@@ -17,7 +17,7 @@ function mapDispatchToProps(dispatch: Dispatch) {
     {
       changeAvro: changeAvroWithDispatch,
       avroMouseMove,
-      changeAvroPristine: changeAvroPristineWithDispatch
+      saveAvro: saveAvroWithDispatch
     },
     dispatch
   );

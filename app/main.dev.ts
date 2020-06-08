@@ -13,7 +13,7 @@ import { app, BrowserWindow } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
-import { getMainWindow, setMainWindow } from './main-window';
+import { getActiveWindow, setActiveWindow } from './active-window';
 
 export default class AppUpdater {
   constructor() {
@@ -90,7 +90,7 @@ export const createWindow = async (blank = false) => {
   });
 
   mainWindow.on('closed', () => {
-    setMainWindow(null);
+    setActiveWindow(null);
   });
 
   const menuBuilder = new MenuBuilder(mainWindow);
@@ -118,40 +118,40 @@ app.on('ready', () => createWindow());
 app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
-  if (getMainWindow() === null) createWindow();
+  if (getActiveWindow() === null) createWindow();
 });
 
 app.on('browser-window-focus', (_, focusedWindow) => {
-  setMainWindow(focusedWindow);
+  setActiveWindow(focusedWindow);
 });
 
 app.on('open-file', (_, path) => {
-  const mainWindow = getMainWindow();
-  if (mainWindow !== null) mainWindow.webContents.send('open-file', path);
+  const activeWindow = getActiveWindow();
+  if (activeWindow !== null) activeWindow.webContents.send('open-file', path);
 });
 
 autoUpdater.on('update-available', () => {
-  const mainWindow = getMainWindow();
-  if (mainWindow !== null)
-    mainWindow.webContents.send(
+  const activeWindow = getActiveWindow();
+  if (activeWindow !== null)
+    activeWindow.webContents.send(
       'message',
       'Update available. Keep your app opened,  you will be informed when it will be downloaded.'
     );
 });
 
 autoUpdater.on('error', err => {
-  const mainWindow = getMainWindow();
-  if (mainWindow !== null)
-    mainWindow.webContents.send(
+  const activeWindow = getActiveWindow();
+  if (activeWindow !== null)
+    activeWindow.webContents.send(
       'message',
       `Error in auto-updater: ${err.message}`
     );
 });
 
 autoUpdater.on('update-downloaded', () => {
-  const mainWindow = getMainWindow();
-  if (mainWindow !== null)
-    mainWindow.webContents.send(
+  const activeWindow = getActiveWindow();
+  if (activeWindow !== null)
+    activeWindow.webContents.send(
       'message',
       'Update downloaded. You can restart app to apply update.'
     );
