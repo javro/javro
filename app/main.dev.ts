@@ -18,6 +18,13 @@ export default class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
     autoUpdater.logger = log;
+
+    autoUpdater.setFeedURL({
+      provider: 'github',
+      owner: 'javro',
+      repo: 'javro'
+    });
+
     autoUpdater.checkForUpdatesAndNotify();
   }
 }
@@ -116,4 +123,28 @@ app.on('activate', () => {
 
 app.on('open-file', (_, path) => {
   if (mainWindow !== null) mainWindow.webContents.send('open-file', path);
+});
+
+autoUpdater.on('update-available', () => {
+  if (mainWindow !== null)
+    mainWindow.webContents.send(
+      'message',
+      'Update available. Keep your app opened,  you will be informed when it will be downloaded.'
+    );
+});
+
+autoUpdater.on('error', err => {
+  if (mainWindow !== null)
+    mainWindow.webContents.send(
+      'message',
+      `Error in auto-updater: ${err.message}`
+    );
+});
+
+autoUpdater.on('update-downloaded', () => {
+  if (mainWindow !== null)
+    mainWindow.webContents.send(
+      'message',
+      'Update downloaded. You can restart app to apply update.'
+    );
 });
