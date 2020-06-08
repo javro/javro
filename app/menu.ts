@@ -103,16 +103,7 @@ export default class MenuBuilder {
           label: 'Open Avro',
           accelerator: 'Command+O',
           async click() {
-            const { filePaths } = await dialog.showOpenDialog({
-              properties: ['openFile'],
-              filters: [{ name: 'JSON', extensions: ['json'] }]
-            });
-            if (filePaths[0]) {
-              const mainWindow = getMainWindow();
-              if (mainWindow) {
-                mainWindow.webContents.send('open-file', filePaths[0]);
-              }
-            }
+            await MenuBuilder.openFile();
           }
         }
       ]
@@ -238,8 +229,18 @@ export default class MenuBuilder {
         label: '&File',
         submenu: [
           {
-            label: '&Open',
-            accelerator: 'Ctrl+O'
+            label: '&New',
+            accelerator: 'Ctrl+N',
+            async click() {
+              createWindow(true);
+            }
+          },
+          {
+            label: '&Open Avro',
+            accelerator: 'Ctrl+O',
+            async click() {
+              await MenuBuilder.openFile();
+            }
           },
           {
             label: '&Close',
@@ -326,5 +327,18 @@ export default class MenuBuilder {
     ];
 
     return templateDefault;
+  }
+
+  private static async openFile() {
+    const { filePaths } = await dialog.showOpenDialog({
+      properties: ['openFile'],
+      filters: [{ name: 'JSON', extensions: ['json'] }]
+    });
+    if (filePaths[0]) {
+      const mainWindow = getMainWindow();
+      if (mainWindow) {
+        mainWindow.webContents.send('open-file', filePaths[0]);
+      }
+    }
   }
 }
