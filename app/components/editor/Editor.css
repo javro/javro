@@ -1,8 +1,0 @@
-.layoutContent {
-  padding: 24px;
-  min-height: 50vh;
-}
-
-.codeEditor {
-  height: calc(90vh - 7rem);
-}

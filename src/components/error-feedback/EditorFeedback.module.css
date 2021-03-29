@@ -1,0 +1,22 @@
+.errorFeedback {
+  position: fixed;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+}
+
+.tag {
+  width: 4rem;
+  text-align: center;
+}
+
+.errorFeedbackCollapse {
+  box-shadow: 0 -6px 16px -8px rgba(0, 0, 0, 0.08),
+    0 -9px 28px 0 rgba(0, 0, 0, 0.05), 0 -12px 48px 16px rgba(0, 0, 0, 0.03);
+}
+
+/* stylelint-disable selector-pseudo-class-no-unknown */
+.errorFeedbackPanel :global .ant-collapse-content {
+  overflow-y: auto;
+  max-height: 45vh;
+}

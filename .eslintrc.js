@@ -1,43 +1,29 @@
 module.exports = {
-  extends: 'erb/typescript',
+  extends: 'erb',
   rules: {
     // A temporary hack related to IDE not resolving correct package.json
-    'import/no-extraneous-dependencies': 'off'
+    'import/no-extraneous-dependencies': 'off',
+    '@typescript-eslint/ban-types': 'off',
+    'react/destructuring-assignment': 'off',
+    'react/static-property-placement': 'off',
   },
-  overrides: [
-    {
-      files: ['*.ts', '*.tsx', '*.js'],
-      excludedFiles: ['*.spec.ts', '*.spec.tsx', '*.spec.js', '*.spec.jsx'],
-      extends: 'erb/typescript',
-      rules: {
-        // A temporary hack related to IDE not resolving correct package.json
-        'import/no-extraneous-dependencies': 'off',
-        'react/static-property-placement': 'off',
-        'react/destructuring-assignment': 'off'
-      }
-    },
-    {
-      files: ['*.spec.ts', '*.spec.tsx', '*.spec.js', '*.spec.jsx'],
-      extends: 'plugin:testcafe/recommended',
-      env: {
-        'jest/globals': true
-      },
-      plugins: ['jest', 'testcafe'],
-      rules: {
-        'jest/no-disabled-tests': 'warn',
-        'jest/no-focused-tests': 'error',
-        'jest/no-identical-title': 'error',
-        'no-console': 'off'
-      }
-    }
-  ],
+  parserOptions: {
+    ecmaVersion: 2020,
+    sourceType: 'module',
+    project: './tsconfig.json',
+    tsconfigRootDir: __dirname,
+    createDefaultProgram: true,
+  },
   settings: {
     'import/resolver': {
       // See https://github.com/benmosher/eslint-plugin-import/issues/1396#issuecomment-575727774 for line below
       node: {},
       webpack: {
-        config: require.resolve('./configs/webpack.config.eslint.js')
-      }
-    }
-  }
+        config: require.resolve('./.erb/configs/webpack.config.eslint.js'),
+      },
+    },
+    'import/parsers': {
+      '@typescript-eslint/parser': ['.ts', '.tsx'],
+    },
+  },
 };
