@@ -2665,6 +2665,18 @@ atob@^2.1.2:
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
+avsc-json-sample@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/avsc-json-sample/-/avsc-json-sample-1.0.1.tgz#23c8e0a95805b2e9b57af47a0142015c3540313d"
+  integrity sha512-lMPt68dzKslpW62thwOgmtRs3YeuIUoMsgs0TUHkLLbMey156NCEsTNATxbJveTm7JRtWhpIoYSf0YMA1O6zUg==
+  dependencies:
+    avsc "5.5.3"
+
+avsc@5.5.3:
+  version "5.5.3"
+  resolved "https://registry.yarnpkg.com/avsc/-/avsc-5.5.3.tgz#40b4ce7aee9f4a5c4e48243114fed0977523e8e9"
+  integrity sha512-LaBbmBsus1mpK+6i99AF57/tUP8/wAj9+ZZm/5HGNIWN0dUZWUEp4/o79pAiRz49Mdb3PskltbCFD3w115TdZQ==
+
 avsc@5.6.1:
   version "5.6.1"
   resolved "https://registry.yarnpkg.com/avsc/-/avsc-5.6.1.tgz#aae0dbb386df61416881ee5c28eb346de0ec98e3"

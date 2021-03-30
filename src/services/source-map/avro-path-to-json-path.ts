@@ -19,7 +19,7 @@ export default function avroPathToJsonPath(
       curAvroNode = curAvroNode[avroNodeName];
 
       const isCurrentAvroNodeIsAnArray = curAvroNode?.items;
-      if (isCurrentAvroNodeIsAnArray) {
+      if (isCurrentAvroNodeIsAnArray && Array.isArray(curJsonNode)) {
         const [firstArrayNode] = curJsonNode;
         curJsonNode = firstArrayNode;
         return '0';

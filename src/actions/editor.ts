@@ -1,8 +1,8 @@
 import { Dispatch } from 'redux';
 import * as jsonSourceMapLib from 'json-source-map';
-import avro from 'avsc';
 import fs from 'fs';
 import { message as antMessage } from 'antd';
+import { avscJsonSample } from 'avsc-json-sample';
 
 export const CHANGE_JSON = 'CHANGE_JSON';
 export const CHANGE_AVRO = 'CHANGE_AVRO';
@@ -103,8 +103,7 @@ export function changeAvroWithDispatch(
         data: parsedAvro,
         pointers: avroSourceMap,
       } = jsonSourceMapLib.parse(strAvro);
-      const avroType = avro.Type.forSchema(parsedAvro);
-      const parsedJson = avroType.sample();
+      const parsedJson = avscJsonSample(parsedAvro);
       const {
         json: strJson,
         pointers: jsonSourceMap,
