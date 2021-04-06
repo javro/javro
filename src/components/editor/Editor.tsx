@@ -1,8 +1,9 @@
 import React from 'react';
-import { Breadcrumb, Col, Layout, Row, Tag } from 'antd';
+import { Breadcrumb, Layout, Tag } from 'antd';
 import { SourceMap } from 'json-source-map';
 import { takeRight } from 'lodash';
 import { EditOutlined } from '@ant-design/icons';
+import Split from 'react-split';
 import classNames from './Editor.module.css';
 import CodeEditor, {
   EditorError,
@@ -155,8 +156,8 @@ export default class Editor extends React.Component<
                   )}
                 </Breadcrumb>
               )}
-              <Row gutter={16}>
-                <Col span={12}>
+              <Split cursor="col-resize" className={classNames.split}>
+                <div>
                   <h3 style={{ color: COLORS.DARK_BLUE }}>Avro</h3>
 
                   <div className={classNames.codeEditor}>
@@ -177,8 +178,8 @@ export default class Editor extends React.Component<
                       }}
                     />
                   </div>
-                </Col>
-                <Col span={12}>
+                </div>
+                <div>
                   <h3 style={{ color: COLORS.DARK_BLUE }}>JSON</h3>
 
                   <div className={classNames.codeEditor}>
@@ -189,8 +190,8 @@ export default class Editor extends React.Component<
                       monacoOptions={{ readOnly: true }}
                     />
                   </div>
-                </Col>
-              </Row>
+                </div>
+              </Split>
             </div>
           </Content>
           <ErrorFeedback

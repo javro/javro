@@ -4,6 +4,7 @@ import MonacoEditor, {
   EditorWillMount,
 } from 'react-monaco-editor';
 import * as monacoEditor from 'monaco-editor';
+import ReactResizeDetector from 'react-resize-detector';
 import schema from '../avro-schema.json';
 import { COLORS } from '../../constants/theme';
 
@@ -54,7 +55,10 @@ export default function CodeEditor(props: Props) {
     selection,
   } = props as Required<Omit<Props, 'selection'>> & Props;
 
-  const [editor, setEditor] = useState();
+  const [
+    editor,
+    setEditor,
+  ] = useState<monacoEditor.editor.IStandaloneCodeEditor>();
 
   useEffect(() => {
     if (editor && selection) {
@@ -130,17 +134,24 @@ export default function CodeEditor(props: Props) {
   };
 
   return (
-    <MonacoEditor
-      width="100%"
-      height="100%"
-      language="json"
-      theme="javro"
-      options={computedMonacoOptions}
-      value={value}
-      editorWillMount={editorWillMount}
-      editorDidMount={editorDidMount}
-      onChange={(v) => valueOnChange(v)}
-    />
+    <>
+      <ReactResizeDetector
+        handleWidth
+        handleHeight
+        onResize={() => editor?.layout()}
+      />
+      <MonacoEditor
+        width="100%"
+        height="100%"
+        language="json"
+        theme="javro"
+        options={computedMonacoOptions}
+        value={value}
+        editorWillMount={editorWillMount}
+        editorDidMount={editorDidMount}
+        onChange={(v) => valueOnChange(v)}
+      />
+    </>
   );
 }
 
