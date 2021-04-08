@@ -1,3 +1,5 @@
+# Javro [![CircleCI](https://circleci.com/gh/javro/javro.svg?style=svg)](https://circleci.com/gh/javro/javro)
+
 ![Javro](https://javro.github.io/assets/images/demo.gif)
 
 ## Install CLI
