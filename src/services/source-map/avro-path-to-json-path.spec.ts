@@ -1,4 +1,3 @@
-import * as jsonSourceMap from 'json-source-map';
 import avroPathToJsonPath from './avro-path-to-json-path';
 
 const nestedAvro = {
@@ -7,7 +6,6 @@ const nestedAvro = {
   fields: [
     {
       name: 'r11',
-      default: 'default value',
       type: {
         name: 'R11',
         type: 'record',
@@ -44,37 +42,21 @@ const nestedAvro = {
   ],
 };
 
-const nestedJson = {
-  r11: {
-    r111: {
-      r1111: 'string',
-    },
-    r112: {
-      r1112: 'string',
-    },
-  },
-};
-
 describe('retrieve json path from avro path', () => {
   test('rootRecord', () => {
-    const result = avroPathToJsonPath('/fields/0', nestedAvro, nestedJson);
+    const result = avroPathToJsonPath('/fields/0', nestedAvro);
     expect(result).toEqual('/r11');
   });
 
   test('2 levels Record', () => {
-    const result = avroPathToJsonPath(
-      '/fields/0/type/fields/0',
-      nestedAvro,
-      nestedJson
-    );
+    const result = avroPathToJsonPath('/fields/0/type/fields/0', nestedAvro);
     expect(result).toEqual('/r11/r111');
   });
 
   test('3 levels Record', () => {
     const result = avroPathToJsonPath(
       '/fields/0/type/fields/1/type/fields/0',
-      nestedAvro,
-      nestedJson
+      nestedAvro
     );
     expect(result).toEqual('/r11/r112/r1112');
   });
@@ -82,8 +64,7 @@ describe('retrieve json path from avro path', () => {
   test("3 levels Record's name fields", () => {
     const result = avroPathToJsonPath(
       '/fields/0/type/fields/1/type/fields/0/name',
-      nestedAvro,
-      nestedJson
+      nestedAvro
     );
     expect(result).toEqual('/r11/r112/r1112');
   });
@@ -93,8 +74,7 @@ describe('retrieve json path from avro path', () => {
       name: 'test',
       type: 'string',
     };
-    const stringJson = jsonSourceMap.stringify('string', null, 2);
-    const result = avroPathToJsonPath('', stringAvro, stringJson);
+    const result = avroPathToJsonPath('', stringAvro);
     expect(result).toEqual('');
   });
   describe('union type', () => {
@@ -121,22 +101,14 @@ describe('retrieve json path from avro path', () => {
       ],
     };
 
-    const unionJson = {
-      field1: 'string',
-    };
     test('type which is sampled in json', () => {
-      const result = avroPathToJsonPath(
-        '/fields/0/type/0',
-        unionAvro,
-        unionJson
-      );
+      const result = avroPathToJsonPath('/fields/0/type/0', unionAvro);
       expect(result).toEqual('/field1');
     });
     test('type which is not sampled in json', () => {
       const result = avroPathToJsonPath(
         '/fields/0/type/1/fields/name',
-        unionAvro,
-        unionJson
+        unionAvro
       );
       expect(result).toEqual('/field1');
     });
@@ -166,18 +138,9 @@ describe('retrieve json path from avro path', () => {
       ],
     };
 
-    const arrayJson = {
-      arrayField: [
-        {
-          fieldInArray: 'string',
-        },
-      ],
-    };
-
     const result = avroPathToJsonPath(
       '/fields/0/type/items/fields/0/name',
-      arrayAvro,
-      arrayJson
+      arrayAvro
     );
     expect(result).toEqual('/arrayField/0/fieldInArray');
   });
@@ -199,7 +162,11 @@ test('wrapped union type', () => {
               {
                 name: 'union1Field',
                 items: 'string',
-                type: 'array',
+                type: {
+                  name: 'TheArray',
+                  type: 'array',
+                  items: 'string',
+                },
               },
             ],
           },
@@ -217,18 +184,46 @@ test('wrapped union type', () => {
       },
     ],
   };
-  const jsonWithWrappedUnionType = {
-    root: {
-      'com.namespace.union1': { union1Field: ['string'] },
-      'com.namespace.union2': { union2Field: 'string' },
-    },
+  const result = avroPathToJsonPath(
+    '/fields/0/type/0/fields/0/type/0',
+    avroWithWrappedUnionType
+  );
+
+  expect(result).toEqual('/root/com.namespace.union1/union1Field/0');
+});
+
+test('unwrapped union type', () => {
+  const avroWithUnWrappedUnionType = {
+    namespace: 'com.namespace',
+    name: 'Toto',
+    type: 'record',
+    fields: [
+      {
+        name: 'root',
+        type: [
+          {
+            name: 'Wrapped',
+            type: 'record',
+            fields: [
+              {
+                name: 'wrappedField',
+                items: 'string',
+                type: {
+                  name: 'TheArray',
+                  type: 'array',
+                  items: 'string',
+                },
+              },
+            ],
+          },
+        ],
+      },
+    ],
   };
   const result = avroPathToJsonPath(
     '/fields/0/type/0/fields/0/type/0',
-    avroWithWrappedUnionType,
-    jsonWithWrappedUnionType
+    avroWithUnWrappedUnionType
   );
 
-  // TODO handle union expect(result).toEqual('/root/com.namespace.union1/union1Field');
-  expect(result).toEqual('/root');
+  expect(result).toEqual('/root/wrappedField/0');
 });

@@ -4,6 +4,10 @@ export default function getJsonPathFromPosition(
   position: { line: number; column: number },
   sourceMap: SourceMap
 ) {
+  const positionStartingToZero = {
+    line: position.line - 1,
+    column: position.column - 1,
+  };
   return Object.entries(sourceMap)
     .filter(([, pointer]) => {
       let start = pointer.value;
@@ -13,12 +17,14 @@ export default function getJsonPathFromPosition(
       const end = pointer.valueEnd;
 
       const isStartBefore =
-        start.line < position.line ||
-        (start.line === position.line && start.column <= position.column);
+        start.line < positionStartingToZero.line ||
+        (start.line === positionStartingToZero.line &&
+          start.column <= positionStartingToZero.column);
 
       const isEndAfter =
-        end.line > position.line ||
-        (end.line === position.line && end.column >= position.column);
+        end.line > positionStartingToZero.line ||
+        (end.line === positionStartingToZero.line &&
+          end.column >= positionStartingToZero.column);
 
       return isStartBefore && isEndAfter;
     })

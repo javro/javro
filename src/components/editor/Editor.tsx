@@ -37,14 +37,14 @@ type Props = {
   };
 };
 
-function getJsonPath(avro: Props['avro'], json: Props['json']): string {
+function getJsonPath(avro: Props['avro']): string {
   if (avro.value.sourceMap && avro.position) {
     const avroPath = getJsonPathFromPosition(
       avro.position,
       avro.value.sourceMap
     );
     if (avroPath) {
-      return avroPathToJsonPath(avroPath, avro.value.parsed, json.value.parsed);
+      return avroPathToJsonPath(avroPath, avro.value.parsed);
     }
   }
   return '';
@@ -126,7 +126,7 @@ export default class Editor extends React.Component<
 
     const jsonSelection =
       (json.value.sourceMap &&
-        getPositionFromPath(getJsonPath(avro, json), json.value.sourceMap)) ||
+        getPositionFromPath(getJsonPath(avro), json.value.sourceMap)) ||
       undefined;
 
     return (
