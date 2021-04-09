@@ -1,7 +1,7 @@
 {
   "name": "javro",
   "productName": "javro",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Javro is an interface allowing you to write Avro schemas with ease, to validate it, and to preview it into JSON format with samples",
   "bin": {
     "javro": "cli.js"
@@ -44,8 +44,11 @@
     "reload"
   ],
   "homepage": "https://github.com/javro/javro#readme",
+  "scripts": {
+    "test": "exit 0"
+  },
   "dependencies": {
-    "meow": "7.0.1",
-    "open": "7.0.4"
+    "meow": "9.0.0",
+    "open": "8.0.5"
   }
 }

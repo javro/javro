@@ -17,4 +17,4 @@ if (!filename) {
   process.exit(1);
 }
 
-open(filename, { app: ['javro', `--path=${filename}`] });
+open(filename, { app: { name: 'javro', arguments: [`--path=${filename}`] } });

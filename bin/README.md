@@ -11,3 +11,7 @@ Javro is an interface allowing you to write Avro schemas with ease, to validate 
 ## Usage
 
 `javro ~/Workspace/avro.json`
+
+## Publish
+
+Bump version and `npm publish`
