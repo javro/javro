@@ -1,10 +1,13 @@
+import { Type, types } from 'avsc';
+
+const { RecordType, WrappedUnionType, UnwrappedUnionType, ArrayType } = types;
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type JsonObject = any;
 
 export default function avroPathToJsonPath(
   avroPath: string,
-  nestedAvro: JsonObject,
-  nestedJson: JsonObject
+  nestedAvro: JsonObject
 ): string {
   if (avroPath === '') {
     return '';
@@ -12,24 +15,42 @@ export default function avroPathToJsonPath(
   const avroNodesName = avroPath.split('/');
   avroNodesName.shift();
 
-  let curJsonNode = nestedJson;
+  let parentAvscType: Type = Type.forSchema(nestedAvro);
   let curAvroNode = nestedAvro;
   const jsonNodeNames = avroNodesName
     .map((avroNodeName) => {
       curAvroNode = curAvroNode[avroNodeName];
+      if (
+        parentAvscType instanceof RecordType &&
+        curAvroNode?.type &&
+        parentAvscType.fields[+avroNodeName]
+      ) {
+        const currentAvscType = parentAvscType.fields[+avroNodeName];
+        parentAvscType = currentAvscType.type;
+        return currentAvscType.name;
+      }
+      if (
+        parentAvscType instanceof WrappedUnionType &&
+        parentAvscType.types[+avroNodeName]
+      ) {
+        const currentAvscType = parentAvscType.types[+avroNodeName];
+        parentAvscType = currentAvscType;
+        return currentAvscType.branchName;
+      }
 
-      const isCurrentAvroNodeIsAnArray = curAvroNode?.items;
-      if (isCurrentAvroNodeIsAnArray && Array.isArray(curJsonNode)) {
-        const [firstArrayNode] = curJsonNode;
-        curJsonNode = firstArrayNode;
+      if (parentAvscType instanceof ArrayType) {
+        parentAvscType = parentAvscType.itemsType;
         return '0';
       }
 
-      if (curAvroNode?.name && curJsonNode[curAvroNode.name] !== undefined) {
-        const jsonNodeName = curAvroNode.name;
-        curJsonNode = curJsonNode[jsonNodeName];
-        return jsonNodeName;
+      if (
+        parentAvscType instanceof UnwrappedUnionType &&
+        parentAvscType.types[+avroNodeName]
+      ) {
+        parentAvscType = parentAvscType.types[+avroNodeName];
+        return undefined;
       }
+
       return undefined;
     })
     .filter((jsonNodeName) => jsonNodeName !== undefined);
